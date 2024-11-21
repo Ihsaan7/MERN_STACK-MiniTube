@@ -158,51 +158,29 @@ const UploadVideoPage = () => {
           }`}
         >
           <div className="text-center">
-            {/* Animated Upload Icon */}
-            <div className="relative mb-8">
-              <div className={`absolute inset-0 flex items-center justify-center`}>
-                <div className="w-24 h-24 border-4 border-orange-500/20 rounded-full animate-ping"></div>
-              </div>
-              <div className={`relative flex items-center justify-center`}>
-                <div className="w-24 h-24 border-4 border-transparent border-t-orange-500 rounded-full animate-spin"></div>
-                <svg
-                  className="absolute w-12 h-12 text-orange-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                  />
-                </svg>
-              </div>
+            {/* Simple Spinner */}
+            <div className="relative w-16 h-16 mx-auto mb-6">
+              <div className={`absolute inset-0 border-4 ${
+                isDark ? "border-neutral-800" : "border-neutral-200"
+              }`}></div>
+              <div className="absolute inset-0 border-4 border-transparent border-t-orange-500 animate-spin"></div>
             </div>
 
             {/* Loading Text */}
             <h2
-              className={`text-2xl font-bold mb-2 ${
+              className={`text-xl font-bold tracking-tight mb-2 ${
                 isDark ? "text-white" : "text-neutral-900"
               }`}
             >
               Uploading Video
             </h2>
             <p
-              className={`text-base font-semibold ${
+              className={`text-sm font-semibold ${
                 isDark ? "text-neutral-400" : "text-neutral-600"
               }`}
             >
               Please wait while we process your video...
             </p>
-
-            {/* Animated Dots */}
-            <div className="flex items-center justify-center gap-2 mt-6">
-              <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-              <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-              <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
-            </div>
           </div>
         </div>
       </Layout>
@@ -215,18 +193,18 @@ const UploadVideoPage = () => {
           isDark ? "bg-neutral-950" : "bg-neutral-50"
         }`}
       >
-        <div className="container mx-auto px-6 py-12 max-w-5xl">
+        <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-12 max-w-5xl">
           {/* Back Button */}
           <button
             onClick={() => navigate("/home")}
-            className={`flex items-center gap-2 mb-6 px-4 py-2 border font-semibold transition-all duration-200 hover:scale-105 active:scale-95 ${
+            className={`flex items-center gap-2 mb-4 sm:mb-6 px-3 sm:px-4 py-2 border font-semibold transition-all duration-200 hover:scale-105 active:scale-95 text-sm sm:text-base ${
               isDark
                 ? "border-neutral-700 text-neutral-300 hover:bg-neutral-800"
                 : "border-neutral-300 text-neutral-700 hover:bg-neutral-50"
             }`}
           >
             <svg
-              className="w-5 h-5"
+              className="w-4 h-4 sm:w-5 sm:h-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -238,20 +216,21 @@ const UploadVideoPage = () => {
                 d="M10 19l-7-7m0 0l7-7m-7 7h18"
               />
             </svg>
-            Back to Home
+            <span className="hidden sm:inline">Back to Home</span>
+            <span className="sm:hidden">Back</span>
           </button>
 
           {/* Header */}
-          <div className="mb-8">
+          <div className="mb-6 sm:mb-8">
             <h1
-              className={`text-4xl font-bold mb-2 ${
+              className={`text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 ${
                 isDark ? "text-white" : "text-neutral-900"
               }`}
             >
               Upload Video
             </h1>
             <p
-              className={`font-semibold ${
+              className={`font-semibold text-sm sm:text-base ${
                 isDark ? "text-neutral-400" : "text-neutral-600"
               }`}
             >
@@ -259,39 +238,39 @@ const UploadVideoPage = () => {
             </p>
           </div>
           {/* Upload Form */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 max-w-7xl mx-auto">
             {/* Main Form */}
             <div className="lg:col-span-2">
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                 {error && (
                   <div
-                    className={`p-4 border ${
+                    className={`p-3 sm:p-4 border ${
                       isDark
                         ? "bg-red-950/20 border-red-900/50 text-red-400"
                         : "bg-red-50 border-red-200 text-red-700"
                     }`}
                   >
-                    <p className="font-semibold text-sm">{error}</p>
+                    <p className="font-semibold text-xs sm:text-sm">{error}</p>
                   </div>
                 )}
 
                 {/* Video Details Section */}
                 <div
-                  className={`border p-6 ${
+                  className={`border p-4 sm:p-6 ${
                     isDark
                       ? "bg-neutral-900 border-neutral-800"
                       : "bg-white border-neutral-200 shadow-md"
                   }`}
                 >
                   <h2
-                    className={`text-xl font-bold mb-6 ${
+                    className={`text-lg sm:text-xl font-bold mb-4 sm:mb-6 ${
                       isDark ? "text-white" : "text-neutral-900"
                     }`}
                   >
                     Video Details
                   </h2>
 
-                  <div className="space-y-6">
+                  <div className="space-y-4 sm:space-y-6">
                     <div>
                       <label
                         className={`block font-bold mb-2 text-sm ${
@@ -305,7 +284,7 @@ const UploadVideoPage = () => {
                         name="title"
                         value={formData.title}
                         onChange={handleChange}
-                        className={`w-full px-4 py-3 border font-medium focus:outline-none focus:ring-2 focus:ring-orange-500 ${
+                        className={`w-full px-3 sm:px-4 py-2 sm:py-3 border font-medium text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-orange-500 ${
                           isDark
                             ? "bg-neutral-950 border-neutral-800 text-white placeholder-neutral-600"
                             : "bg-white border-neutral-300 text-neutral-900 placeholder-neutral-400"
@@ -335,13 +314,13 @@ const UploadVideoPage = () => {
                         name="description"
                         value={formData.description}
                         onChange={handleChange}
-                        className={`w-full px-4 py-3 border font-medium focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none ${
+                        className={`w-full px-3 sm:px-4 py-2 sm:py-3 border font-medium text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none ${
                           isDark
                             ? "bg-neutral-950 border-neutral-800 text-white placeholder-neutral-600"
                             : "bg-white border-neutral-300 text-neutral-900 placeholder-neutral-400"
                         }`}
                         placeholder="Tell viewers about your video"
-                        rows={5}
+                        rows={4}
                         maxLength={500}
                         required
                       />
@@ -358,14 +337,14 @@ const UploadVideoPage = () => {
 
                 {/* Video File Section */}
                 <div
-                  className={`border p-6 ${
+                  className={`border p-4 sm:p-6 ${
                     isDark
                       ? "bg-neutral-900 border-neutral-800"
                       : "bg-white border-neutral-200 shadow-md"
                   }`}
                 >
                   <h2
-                    className={`text-xl font-bold mb-6 ${
+                    className={`text-lg sm:text-xl font-bold mb-4 sm:mb-6 ${
                       isDark ? "text-white" : "text-neutral-900"
                     }`}
                   >
@@ -373,14 +352,14 @@ const UploadVideoPage = () => {
                   </h2>
 
                   <div
-                    className={`border-2 border-dashed p-8 text-center transition-colors ${
+                    className={`border-2 border-dashed p-4 sm:p-8 text-center transition-colors ${
                       isDark
                         ? "border-neutral-700 hover:border-orange-500"
                         : "border-neutral-300 hover:border-orange-500"
                     }`}
                   >
                     <svg
-                      className={`w-12 h-12 mx-auto mb-4 ${
+                      className={`w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 ${
                         isDark ? "text-neutral-600" : "text-neutral-400"
                       }`}
                       fill="none"
@@ -404,14 +383,14 @@ const UploadVideoPage = () => {
                     />
                     <label htmlFor="videoFile" className="cursor-pointer">
                       <span
-                        className={`block font-bold mb-2 ${
+                        className={`block font-bold mb-2 text-sm sm:text-base break-all px-2 ${
                           isDark ? "text-white" : "text-neutral-900"
                         }`}
                       >
                         {videoFile ? videoFile.name : "Select video file"}
                       </span>
                       <span
-                        className={`text-sm font-semibold ${
+                        className={`text-xs sm:text-sm font-semibold ${
                           isDark ? "text-neutral-400" : "text-neutral-600"
                         }`}
                       >
@@ -444,30 +423,30 @@ const UploadVideoPage = () => {
 
                 {/* Thumbnail Section */}
                 <div
-                  className={`border p-6 ${
+                  className={`border p-4 sm:p-6 ${
                     isDark
                       ? "bg-neutral-900 border-neutral-800"
                       : "bg-white border-neutral-200 shadow-md"
                   }`}
                 >
                   <h2
-                    className={`text-xl font-bold mb-6 ${
+                    className={`text-lg sm:text-xl font-bold mb-4 sm:mb-6 ${
                       isDark ? "text-white" : "text-neutral-900"
                     }`}
                   >
                     Thumbnail
                   </h2>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                     <div
-                      className={`border-2 border-dashed p-6 text-center transition-colors ${
+                      className={`border-2 border-dashed p-4 sm:p-6 text-center transition-colors ${
                         isDark
                           ? "border-neutral-700 hover:border-orange-500"
                           : "border-neutral-300 hover:border-orange-500"
                       }`}
                     >
                       <svg
-                        className={`w-10 h-10 mx-auto mb-3 ${
+                        className={`w-8 h-8 sm:w-10 sm:h-10 mx-auto mb-2 sm:mb-3 ${
                           isDark ? "text-neutral-600" : "text-neutral-400"
                         }`}
                         fill="none"
@@ -491,7 +470,7 @@ const UploadVideoPage = () => {
                       />
                       <label htmlFor="thumbnail" className="cursor-pointer">
                         <span
-                          className={`block font-bold text-sm mb-1 ${
+                          className={`block font-bold text-xs sm:text-sm mb-1 ${
                             isDark ? "text-white" : "text-neutral-900"
                           }`}
                         >
@@ -531,7 +510,7 @@ const UploadVideoPage = () => {
                 {/* Upload Progress */}
                 {uploadProgress > 0 && uploadProgress < 100 && (
                   <div
-                    className={`border p-6 ${
+                    className={`border p-4 sm:p-6 ${
                       isDark
                         ? "bg-neutral-900 border-neutral-800"
                         : "bg-white border-neutral-200 shadow-md"
@@ -539,23 +518,23 @@ const UploadVideoPage = () => {
                   >
                     <div className="flex items-center justify-between mb-3">
                       <span
-                        className={`font-bold ${
+                        className={`font-bold text-sm sm:text-base ${
                           isDark ? "text-white" : "text-neutral-900"
                         }`}
                       >
                         Uploading...
                       </span>
-                      <span className={`font-bold text-orange-500`}>
+                      <span className={`font-bold text-sm sm:text-base text-orange-500`}>
                         {uploadProgress}%
                       </span>
                     </div>
                     <div
-                      className={`w-full h-3 overflow-hidden ${
+                      className={`w-full h-2 sm:h-3 overflow-hidden ${
                         isDark ? "bg-neutral-800" : "bg-neutral-200"
                       }`}
                     >
                       <div
-                        className="bg-orange-500 h-3 transition-all duration-300"
+                        className="bg-orange-500 h-2 sm:h-3 transition-all duration-300"
                         style={{ width: `${uploadProgress}%` }}
                       ></div>
                     </div>
@@ -567,14 +546,14 @@ const UploadVideoPage = () => {
             {/* Sidebar */}
             <div className="lg:col-span-1">
               <div
-                className={`border p-6 sticky top-6 ${
+                className={`border p-4 sm:p-6 lg:sticky lg:top-6 ${
                   isDark
                     ? "bg-neutral-900 border-neutral-800"
                     : "bg-white border-neutral-200 shadow-md"
                 }`}
               >
                 <h2
-                  className={`text-xl font-bold mb-6 ${
+                  className={`text-lg sm:text-xl font-bold mb-4 sm:mb-6 ${
                     isDark ? "text-white" : "text-neutral-900"
                   }`}
                 >
@@ -583,16 +562,16 @@ const UploadVideoPage = () => {
 
                 {/* Publish Toggle */}
                 <div
-                  className={`p-4 border mb-6 ${
+                  className={`p-3 sm:p-4 border mb-4 sm:mb-6 ${
                     isDark
                       ? "border-neutral-800 bg-neutral-950"
                       : "border-neutral-200 bg-neutral-50"
                   }`}
                 >
-                  <div className="flex items-center justify-between mb-3">
-                    <div>
+                  <div className="flex items-center justify-between gap-3 mb-3">
+                    <div className="flex-1 min-w-0">
                       <p
-                        className={`font-bold ${
+                        className={`font-bold text-sm sm:text-base ${
                           isDark ? "text-white" : "text-neutral-900"
                         }`}
                       >
@@ -611,7 +590,7 @@ const UploadVideoPage = () => {
                     <button
                       type="button"
                       onClick={() => setIsPublished(!isPublished)}
-                      className={`relative inline-flex h-8 w-14 items-center transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ${
+                      className={`relative inline-flex h-7 w-12 sm:h-8 sm:w-14 flex-shrink-0 items-center transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ${
                         isPublished
                           ? "bg-orange-500"
                           : isDark
@@ -620,8 +599,8 @@ const UploadVideoPage = () => {
                       }`}
                     >
                       <span
-                        className={`inline-block h-6 w-6 transform bg-white transition-transform ${
-                          isPublished ? "translate-x-7" : "translate-x-1"
+                        className={`inline-block h-5 w-5 sm:h-6 sm:w-6 transform bg-white transition-transform ${
+                          isPublished ? "translate-x-6 sm:translate-x-7" : "translate-x-1"
                         }`}
                       />
                     </button>
@@ -633,14 +612,14 @@ const UploadVideoPage = () => {
                   type="button"
                   onClick={handleSubmit}
                   disabled={loading}
-                  className="w-full py-3 bg-orange-500 text-white font-bold hover:bg-orange-600 transition-all duration-200 hover:scale-105 active:scale-95 disabled:bg-neutral-600 disabled:cursor-not-allowed disabled:hover:scale-100 mb-4"
+                  className="w-full py-2.5 sm:py-3 text-sm sm:text-base bg-orange-500 text-white font-bold hover:bg-orange-600 transition-all duration-200 hover:scale-105 active:scale-95 disabled:bg-neutral-600 disabled:cursor-not-allowed disabled:hover:scale-100 mb-4"
                 >
                   {loading ? "Uploading..." : "Upload Video"}
                 </button>
 
                 {/* Info */}
                 <div
-                  className={`text-xs font-semibold space-y-2 ${
+                  className={`text-xs font-semibold space-y-1.5 sm:space-y-2 ${
                     isDark ? "text-neutral-500" : "text-neutral-500"
                   }`}
                 >
