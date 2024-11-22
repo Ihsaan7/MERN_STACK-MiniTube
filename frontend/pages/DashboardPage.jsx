@@ -174,18 +174,18 @@ const DashboardPage = () => {
           isDark ? "bg-neutral-950" : "bg-neutral-50"
         }`}
       >
-        <div className="container mx-auto px-6 py-8">
+        <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
           {/* Back Button */}
           <button
             onClick={() => navigate("/home")}
-            className={`flex items-center gap-2 mb-6 px-4 py-2 border font-semibold transition-all duration-200 hover:scale-105 active:scale-95 ${
+            className={`flex items-center gap-2 mb-4 sm:mb-6 px-3 sm:px-4 py-2 border text-sm sm:text-base font-semibold transition-all duration-200 hover:scale-105 active:scale-95 ${
               isDark
                 ? "border-neutral-700 text-neutral-300 hover:bg-neutral-800"
                 : "border-neutral-300 text-neutral-700 hover:bg-neutral-50"
             }`}
           >
             <svg
-              className="w-5 h-5"
+              className="w-4 h-4 sm:w-5 sm:h-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -197,20 +197,21 @@ const DashboardPage = () => {
                 d="M10 19l-7-7m0 0l7-7m-7 7h18"
               />
             </svg>
-            Back to Home
+            <span className="hidden sm:inline">Back to Home</span>
+            <span className="sm:hidden">Back</span>
           </button>
 
           {/* Header */}
-          <div className="mb-8">
+          <div className="mb-6 sm:mb-8">
             <h1
-              className={`text-4xl font-bold tracking-tight mb-2 ${
+              className={`text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-2 ${
                 isDark ? "text-white" : "text-neutral-900"
               }`}
             >
               Channel Analytics
             </h1>
             <p
-              className={`font-semibold ${isDark ? "text-neutral-400" : "text-neutral-600"}`}
+              className={`text-sm sm:text-base font-semibold ${isDark ? "text-neutral-400" : "text-neutral-600"}`}
             >
               Track your channel's performance
             </p>
@@ -218,15 +219,15 @@ const DashboardPage = () => {
 
           {/* Info Banner */}
           <div
-            className={`mb-6 p-4 border ${
+            className={`mb-4 sm:mb-6 p-3 sm:p-4 border ${
               isDark
                 ? "bg-neutral-900 border-neutral-800"
                 : "bg-white border-neutral-200"
             }`}
           >
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-2 sm:gap-3">
               <svg
-                className={`w-5 h-5 shrink-0 mt-0.5 ${
+                className={`w-4 h-4 sm:w-5 sm:h-5 shrink-0 mt-0.5 ${
                   isDark ? "text-orange-500" : "text-orange-600"
                 }`}
                 fill="none"
@@ -242,14 +243,14 @@ const DashboardPage = () => {
               </svg>
               <div>
                 <p
-                  className={`text-sm font-bold mb-1 ${
+                  className={`text-xs sm:text-sm font-bold mb-1 ${
                     isDark ? "text-white" : "text-neutral-900"
                   }`}
                 >
                   Published Videos Only
                 </p>
                 <p
-                  className={`text-sm font-semibold ${
+                  className={`text-xs sm:text-sm font-semibold ${
                     isDark ? "text-neutral-400" : "text-neutral-600"
                   }`}
                 >
@@ -261,19 +262,19 @@ const DashboardPage = () => {
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
             {/* Total Views */}
             <div
-              className={`border p-6 ${
+              className={`border p-4 sm:p-6 ${
                 isDark
                   ? "bg-neutral-900 border-neutral-800"
                   : "bg-white border-neutral-200 shadow-md"
               }`}
             >
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-orange-500/10 border border-orange-500/20">
+              <div className="flex items-center justify-between mb-3 sm:mb-4">
+                <div className="p-2 sm:p-3 bg-orange-500/10 border border-orange-500/20">
                   <svg
-                    className="w-6 h-6 text-orange-500"
+                    className="w-4 h-4 sm:w-6 sm:h-6 text-orange-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -294,14 +295,14 @@ const DashboardPage = () => {
                 </div>
               </div>
               <h3
-                className={`text-3xl font-bold tracking-tight mb-1 ${
+                className={`text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight mb-1 ${
                   isDark ? "text-white" : "text-neutral-900"
                 }`}
               >
                 {formatNumber(stats?.totalViews || 0)}
               </h3>
               <p
-                className={`text-sm font-semibold ${
+                className={`text-xs sm:text-sm font-semibold ${
                   isDark ? "text-neutral-400" : "text-neutral-600"
                 }`}
               >
@@ -311,16 +312,16 @@ const DashboardPage = () => {
 
             {/* Total Subscribers */}
             <div
-              className={`border p-6 ${
+              className={`border p-4 sm:p-6 ${
                 isDark
                   ? "bg-neutral-900 border-neutral-800"
                   : "bg-white border-neutral-200 shadow-md"
               }`}
             >
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-orange-500/10 border border-orange-500/20">
+              <div className="flex items-center justify-between mb-3 sm:mb-4">
+                <div className="p-2 sm:p-3 bg-orange-500/10 border border-orange-500/20">
                   <svg
-                    className="w-6 h-6 text-orange-500"
+                    className="w-4 h-4 sm:w-6 sm:h-6 text-orange-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -335,14 +336,14 @@ const DashboardPage = () => {
                 </div>
               </div>
               <h3
-                className={`text-3xl font-bold tracking-tight mb-1 ${
+                className={`text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight mb-1 ${
                   isDark ? "text-white" : "text-neutral-900"
                 }`}
               >
                 {formatNumber(stats?.totalSubscribers || 0)}
               </h3>
               <p
-                className={`text-sm font-semibold ${
+                className={`text-xs sm:text-sm font-semibold ${
                   isDark ? "text-neutral-400" : "text-neutral-600"
                 }`}
               >
@@ -352,16 +353,16 @@ const DashboardPage = () => {
 
             {/* Total Likes */}
             <div
-              className={`border p-6 ${
+              className={`border p-4 sm:p-6 ${
                 isDark
                   ? "bg-neutral-900 border-neutral-800"
                   : "bg-white border-neutral-200 shadow-md"
               }`}
             >
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-orange-500/10 border border-orange-500/20">
+              <div className="flex items-center justify-between mb-3 sm:mb-4">
+                <div className="p-2 sm:p-3 bg-orange-500/10 border border-orange-500/20">
                   <svg
-                    className="w-6 h-6 text-orange-500"
+                    className="w-4 h-4 sm:w-6 sm:h-6 text-orange-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -376,14 +377,14 @@ const DashboardPage = () => {
                 </div>
               </div>
               <h3
-                className={`text-3xl font-bold tracking-tight mb-1 ${
+                className={`text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight mb-1 ${
                   isDark ? "text-white" : "text-neutral-900"
                 }`}
               >
                 {formatNumber(stats?.totalLikes || 0)}
               </h3>
               <p
-                className={`text-sm font-semibold ${
+                className={`text-xs sm:text-sm font-semibold ${
                   isDark ? "text-neutral-400" : "text-neutral-600"
                 }`}
               >
@@ -393,16 +394,16 @@ const DashboardPage = () => {
 
             {/* Total Videos */}
             <div
-              className={`border p-6 ${
+              className={`border p-4 sm:p-6 ${
                 isDark
                   ? "bg-neutral-900 border-neutral-800"
                   : "bg-white border-neutral-200 shadow-md"
               }`}
             >
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-orange-500/10 border border-orange-500/20">
+              <div className="flex items-center justify-between mb-3 sm:mb-4">
+                <div className="p-2 sm:p-3 bg-orange-500/10 border border-orange-500/20">
                   <svg
-                    className="w-6 h-6 text-orange-500"
+                    className="w-4 h-4 sm:w-6 sm:h-6 text-orange-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -417,14 +418,14 @@ const DashboardPage = () => {
                 </div>
               </div>
               <h3
-                className={`text-3xl font-bold tracking-tight mb-1 ${
+                className={`text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight mb-1 ${
                   isDark ? "text-white" : "text-neutral-900"
                 }`}
               >
                 {stats?.totalVideos || 0}
               </h3>
               <p
-                className={`text-sm font-semibold ${
+                className={`text-xs sm:text-sm font-semibold ${
                   isDark ? "text-neutral-400" : "text-neutral-600"
                 }`}
               >
@@ -441,9 +442,9 @@ const DashboardPage = () => {
                 : "bg-white border-neutral-200 shadow-md"
             }`}
           >
-            <div className="p-6 border-b ${isDark ? 'border-neutral-800' : 'border-neutral-200'}">
+            <div className="p-4 sm:p-6 border-b ${isDark ? 'border-neutral-800' : 'border-neutral-200'}">
               <h2
-                className={`text-2xl font-bold ${
+                className={`text-xl sm:text-2xl font-bold ${
                   isDark ? "text-white" : "text-neutral-900"
                 }`}
               >
@@ -483,48 +484,48 @@ const DashboardPage = () => {
                   </button>
                 </div>
               ) : (
-                <table className="w-full">
+                <table className="w-full min-w-[800px]">
                   <thead
                     className={`${isDark ? "bg-neutral-800" : "bg-neutral-50"}`}
                   >
                     <tr>
                       <th
-                        className={`px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider ${
+                        className={`px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold uppercase tracking-wider ${
                           isDark ? "text-neutral-400" : "text-neutral-600"
                         }`}
                       >
                         Video
                       </th>
                       <th
-                        className={`px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider ${
+                        className={`px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold uppercase tracking-wider ${
                           isDark ? "text-neutral-400" : "text-neutral-600"
                         }`}
                       >
                         Status
                       </th>
                       <th
-                        className={`px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider ${
+                        className={`px-3 sm:px-6 py-3 sm:py-4 text-right text-xs font-semibold uppercase tracking-wider ${
                           isDark ? "text-neutral-400" : "text-neutral-600"
                         }`}
                       >
                         Views
                       </th>
                       <th
-                        className={`px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider ${
+                        className={`px-3 sm:px-6 py-3 sm:py-4 text-right text-xs font-semibold uppercase tracking-wider ${
                           isDark ? "text-neutral-400" : "text-neutral-600"
                         }`}
                       >
                         Likes
                       </th>
                       <th
-                        className={`px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider ${
+                        className={`px-3 sm:px-6 py-3 sm:py-4 text-right text-xs font-semibold uppercase tracking-wider ${
                           isDark ? "text-neutral-400" : "text-neutral-600"
                         }`}
                       >
                         Comments
                       </th>
                       <th
-                        className={`px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider ${
+                        className={`px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold uppercase tracking-wider ${
                           isDark ? "text-neutral-400" : "text-neutral-600"
                         }`}
                       >
@@ -547,26 +548,26 @@ const DashboardPage = () => {
                               : "hover:bg-neutral-50"
                           }`}
                         >
-                          <td className="px-6 py-4">
+                          <td className="px-3 sm:px-6 py-3 sm:py-4">
                             <div
                               onClick={() => navigate(`/video/${video._id}`)}
-                              className="flex items-center gap-4 cursor-pointer group"
+                              className="flex items-center gap-2 sm:gap-4 cursor-pointer group"
                             >
                               <img
                                 src={video.thumbnail}
                                 alt={video.title}
-                                className="w-24 aspect-video object-cover group-hover:opacity-80 transition-opacity"
+                                className="w-20 sm:w-24 aspect-video object-cover group-hover:opacity-80 transition-opacity"
                               />
                               <div className="flex-1 min-w-0">
                                 <p
-                                  className={`font-semibold truncate group-hover:text-orange-500 transition-colors ${
+                                  className={`text-sm sm:text-base font-semibold truncate group-hover:text-orange-500 transition-colors ${
                                     isDark ? "text-white" : "text-neutral-900"
                                   }`}
                                 >
                                   {video.title}
                                 </p>
                                 <p
-                                  className={`text-sm truncate ${
+                                  className={`text-xs sm:text-sm truncate ${
                                     isDark
                                       ? "text-neutral-400"
                                       : "text-neutral-600"
@@ -577,9 +578,9 @@ const DashboardPage = () => {
                               </div>
                             </div>
                           </td>
-                          <td className="px-6 py-4">
+                          <td className="px-3 sm:px-6 py-3 sm:py-4">
                             <span
-                              className={`px-2 py-1 text-xs font-semibold ${
+                              className={`px-2 py-1 text-xs font-semibold whitespace-nowrap ${
                                 video.isPublished
                                   ? "bg-green-500/20 text-green-600 dark:text-green-400"
                                   : "bg-yellow-500/20 text-yellow-600 dark:text-yellow-400"
@@ -589,28 +590,28 @@ const DashboardPage = () => {
                             </span>
                           </td>
                           <td
-                            className={`px-6 py-4 text-right font-semibold ${
+                            className={`px-3 sm:px-6 py-3 sm:py-4 text-right text-sm font-semibold whitespace-nowrap ${
                               isDark ? "text-neutral-300" : "text-neutral-700"
                             }`}
                           >
                             {formatNumber(video.view || 0)}
                           </td>
                           <td
-                            className={`px-6 py-4 text-right font-semibold ${
+                            className={`px-3 sm:px-6 py-3 sm:py-4 text-right text-sm font-semibold whitespace-nowrap ${
                               isDark ? "text-neutral-300" : "text-neutral-700"
                             }`}
                           >
                             {formatNumber(video.likesCount || 0)}
                           </td>
                           <td
-                            className={`px-6 py-4 text-right font-semibold ${
+                            className={`px-3 sm:px-6 py-3 sm:py-4 text-right text-sm font-semibold whitespace-nowrap ${
                               isDark ? "text-neutral-300" : "text-neutral-700"
                             }`}
                           >
                             {formatNumber(video.commentsCount || 0)}
                           </td>
                           <td
-                            className={`px-6 py-4 text-sm ${
+                            className={`px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm whitespace-nowrap ${
                               isDark ? "text-neutral-400" : "text-neutral-600"
                             }`}
                           >
