@@ -1,5 +1,14 @@
 import { Router } from "express";
-import { loginUser, registerUser } from "../controllers/user.controller.js";
+import {
+  updatePass,
+  loginUser,
+  logoutUser,
+  newAccessToken,
+  registerUser,
+  updateDetails,
+  userProfile,
+  updateAvatar,
+} from "../controllers/user.controller.js";
 import { uploadMulter } from "../middlewares/multer.mware.js";
 import verifyJWT from "../middlewares/auth.mware.js";
 import ApiResponse from "../utils/apiResponse.js";
@@ -23,5 +32,18 @@ router.route("/signup").post(
 router.route("/login").post(loginUser);
 
 // Protected Routes Here
+router.route("/logout").post(verifyJWT, logoutUser);
+
+router.route("/refresh-token").post(verifyJWT, newAccessToken);
+
+router.route("/update-detail").post(verifyJWT, updateDetails);
+
+router.route("/update-password").patch(verifyJWT, updatePass);
+
+router.route("/profile").get(verifyJWT, userProfile);
+
+router
+  .route("/update-avatar")
+  .patch(verifyJWT, uploadMulter.single("avatar"), updateAvatar);
 
 export default router;
