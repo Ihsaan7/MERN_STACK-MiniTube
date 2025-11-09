@@ -1,10 +1,12 @@
 import { Router } from "express";
 import { loginUser, registerUser } from "../controllers/user.controller.js";
 import { uploadMulter } from "../middlewares/multer.mware.js";
+import verifyJWT from "../middlewares/auth.mware.js";
+import ApiResponse from "../utils/apiResponse.js";
 
 const router = Router();
 
-// User routes
+// ----------------- User routes ------------------------
 router.route("/signup").post(
   uploadMulter.fields([
     {
@@ -18,7 +20,8 @@ router.route("/signup").post(
   ]),
   registerUser
 );
-
 router.route("/login").post(loginUser);
+
+// Protected Routes Here
 
 export default router;
