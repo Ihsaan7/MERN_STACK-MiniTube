@@ -3,7 +3,7 @@ import ApiError from "../utils/apiError.js";
 import ApiResponse from "../utils/apiResponse.js";
 import Video from "../models/video.model.js";
 import { uploadCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js";
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 import User from "../models/user.model.js";
 
 const uploadVideo = asyncHandler(async (req, res) => {
@@ -165,4 +165,119 @@ const updatePublish = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, video, "Published being Toggled Successfully"));
 });
-export { uploadVideo, getVideo, updatePublish };
+
+const updateContent = asyncHandler(async (req, res) => {
+  // Get params
+  const { videoID } = req.params;
+  if (!videoID) {
+    throw new ApiError(400, "Invalid Video Id!");
+  }
+
+  // Get data
+  const { title, description } = req.body;
+  if (!title && !description) {
+    throw new ApiError(400, "Both fileds are required!");
+  }
+
+  // Get Video
+  const video = await Video.findById(videoID);
+  if (!video) {
+    throw new ApiError(404, "Video not found!");
+  }
+
+  // Check for Owner
+  if (video.owner.toString() !== req.user._id.toString()) {
+    throw new ApiError(403, "You can't edit this video!");
+  }
+
+  // Get multer Data
+  const thumbnailLocalPath = req.file?.path;
+  if (!thumbnailLocalPath) {
+    throw new ApiError(400, "thumbnail is required!");
+  }
+
+  // Upload on Cloudi
+  const thumbnail = await uploadCloudinary(thumbnailLocalPath);
+  if (!thumbnail) {
+    throw new ApiError(400, "Error uploading thumbnail to Cloudinary!");
+  }
+
+  // Delete Old files
+  const oldThumbnail = video.thumbnail;
+  if (oldThumbnail) {
+    const publicId = oldThumbnail.split("/").pop().split(".")[0];
+    await deleteFromCloudinary(publicId);
+  }
+
+  // Update the content
+  video.title = title;
+  video.description = description;
+  video.thumbnail = thumbnail.url;
+  await video.save();
+
+  // Return Res
+  return res
+    .status(200)
+    .json(new ApiResponse(200, video, "Video Content Updated Successfully"));
+});
+
+const updateVideo = asyncHandler(async (req, res) => {
+  // Get params
+  const { videoID } = req.params;
+  if (!videoID || !mongoose.isValidObjectId(videoID)) {
+    throw new ApiError(400, "Video ID is invalid!");
+  }
+
+  // Get Video
+  const video = await Video.findById(videoID);
+  if (!video) {
+    throw new ApiError(404, "No video found!");
+  }
+
+  // Check for owner
+  if (video.owner.toString() !== req.user._id.toString()) {
+    throw new ApiError(403, "You can't edit the Video!");
+  }
+
+  // Get Video Data
+  const videoFileLocalPath = req.file?.path;
+  if (!videoFileLocalPath) {
+    throw new ApiError(400, "Video file is missing!");
+  }
+
+  // Check for Size
+  const videoSize = req.file?.size;
+  const maxSize = 5 * 1024 * 1024;
+  if (videoSize > maxSize) {
+    throw new ApiError(400, "Video Size must be less than 5MB!");
+  }
+
+  // Upload on Cloudi
+  const videoFile = await uploadCloudinary(videoFileLocalPath);
+  if (!videoFile) {
+    throw new ApiError(400, "Error uploading Video!");
+  }
+
+  // Get url and Duration
+  const videoUrl = videoFile.url;
+  const videoDuration = videoFile.duration;
+
+  // Delete old video from Cloudinary
+  const oldVideoFile = video.videoFile;
+  if (oldVideoFile) {
+    const publicId = oldVideoFile.split("/").pop().split(".")[0];
+    await deleteFromCloudinary(publicId);
+  }
+
+  // Update video in DB
+  video.videoFile = videoUrl;
+  video.duration = videoDuration;
+  await video.save();
+
+  // Return the res
+  return res
+    .status(200)
+    .json(new ApiResponse(200, video, "Video has been updated Succesfully"));
+});
+
+export { uploadVideo, getVideo, updatePublish, updateContent, updateVideo };

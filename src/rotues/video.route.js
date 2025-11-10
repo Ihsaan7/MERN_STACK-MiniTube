@@ -3,7 +3,9 @@ import { uploadMulter } from "../middlewares/multer.mware.js";
 import verifyJWT from "../middlewares/auth.mware.js";
 import {
   getVideo,
+  updateContent,
   updatePublish,
+  updateVideo,
   uploadVideo,
 } from "../controllers/video.controller.js";
 
@@ -29,4 +31,12 @@ router.route("/upload-video").post(
 router.route("/watch/:videoID").get(getVideo);
 
 router.route("/update-publish/:videoID").patch(updatePublish);
+
+router
+  .route("/update-content/:videoID")
+  .patch(uploadMulter.single("thumbnail"), updateContent);
+
+router
+  .route("/update-video/:videoID")
+  .patch(uploadMulter.single("videoFile"), updateVideo);
 export default router;
