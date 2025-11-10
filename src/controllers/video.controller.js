@@ -137,4 +137,32 @@ const getVideo = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, videoData, "Video Fetched Successfully"));
 });
-export { uploadVideo, getVideo };
+
+const updatePublish = asyncHandler(async (req, res) => {
+  // Get data
+  const { videoID } = req.params;
+  if (!videoID || !mongoose.isValidObjectId(videoID)) {
+    throw new ApiError(400, "Invalid video ID!");
+  }
+
+  // Find the user
+  const video = await Video.findById(videoID);
+  if (!video) {
+    throw new ApiError(404, "Cant find the video!");
+  }
+
+  // Check for owner
+  if (video.owner.toString() !== req.user?._id.toString()) {
+    throw new ApiError(403, "You can't modify this video!");
+  }
+
+  // Toggle the published
+  video.isPublished = !video.isPublished;
+  await video.save();
+
+  // Return res
+  return res
+    .status(200)
+    .json(new ApiResponse(200, video, "Published being Toggled Successfully"));
+});
+export { uploadVideo, getVideo, updatePublish };
