@@ -3,6 +3,8 @@ import ApiError from "../utils/apiError.js";
 import ApiResponse from "../utils/apiResponse.js";
 import Video from "../models/video.model.js";
 import { uploadCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js";
+import mongoose, { mongo } from "mongoose";
+import User from "../models/user.model.js";
 
 const uploadVideo = asyncHandler(async (req, res) => {
   // Get data
@@ -50,4 +52,89 @@ const uploadVideo = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, video, "Video uploaded Successfully"));
 });
 
-export { uploadVideo };
+const getVideo = asyncHandler(async (req, res) => {
+  // Get id
+  const { videoID } = req.params;
+  if (!videoID || !mongoose.isValidObjectId(videoID)) {
+    throw new ApiError(400, "Video Id is invalid!");
+  }
+
+  const video = await Video.aggregate([
+    {
+      $match: { _id: new mongoose.Types.ObjectId(videoID) },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+        pipeline: [
+          {
+            $lookup: {
+              from: "subscriptions",
+              localField: "_id",
+              foreignField: "channel",
+              as: "subscribers",
+            },
+          },
+          {
+            $addFields: {
+              subscriberCount: { $size: "$subscribers" },
+              isSubscribed: {
+                $cond: {
+                  if: { $in: [req.user?._id, "$subscribers.subscriber"] },
+                  then: true,
+                  else: false,
+                },
+              },
+            },
+          },
+          {
+            $project: {
+              username: 1,
+              fullName: 1,
+              avatar: 1,
+              subscriberCount: 1,
+              isSubscribed: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        owner: { $first: "$owner" },
+      },
+    },
+  ]);
+
+  if (!video || video.length === 0) {
+    throw new ApiError(404, "Video not found!");
+  }
+
+  const videoData = video[0];
+  if (!videoData.isPublished) {
+    if (
+      !req.user ||
+      videoData.owner._id.toString() !== req.user._id.toString()
+    ) {
+      throw new ApiError(403, "Video is not available!");
+    }
+  }
+
+  await Video.findByIdAndUpdate(videoID, {
+    $inc: { view: 1 },
+  });
+
+  if (req.user) {
+    await User.findByIdAndUpdate(req.user._id, {
+      $addToSet: { watchHistory: videoID },
+    });
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, videoData, "Video Fetched Successfully"));
+});
+export { uploadVideo, getVideo };
