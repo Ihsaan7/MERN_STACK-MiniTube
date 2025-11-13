@@ -1,4 +1,4 @@
-import mongoose, { mongo, Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const playlistSchema = new mongoose.Schema(
   {
@@ -10,13 +10,19 @@ const playlistSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    vidoes: {
-      type: Schema.Types.ObjectId,
-      ref: "Video",
-    },
+    videos: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Video",
+      },
+    ],
     owner: {
       type: Schema.Types.ObjectId,
       ref: "User",
+    },
+    isPublic: {
+      type: Boolean,
+      default: true,
     },
   },
   { timestamps: true }
