@@ -52,7 +52,7 @@ const toggleSubscribe = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, { isSubscribed, subscriberCount }, message));
 });
 
-const getAllSubbedChannel = asyncHandler(async (req, res) => {
+const getUserChannelSubscribers = asyncHandler(async (req, res) => {
   // Get params
   const { channelID } = req.params;
   if (!channelID || !mongoose.isValidObjectId(channelID)) {
@@ -125,4 +125,104 @@ const getAllSubbedChannel = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, result, "Subbed Channel Fetched Successfully"));
 });
-export { toggleSubscribe, getAllSubbedChannel };
+
+const getAllSubbedChannel = asyncHandler(async (req, res) => {
+  // Page and Limit
+  const { page = 1, limit = 10 } = req.query;
+  const pageNumber = parseInt(page) || 1;
+  const limitNumber = parseInt(limit) || 10;
+
+  const pipeline = [
+    // Stage 1: Match all subscriptions by this user
+    {
+      $match: {
+        subscriber: new mongoose.Types.ObjectId(req.user?._id),
+      },
+    },
+
+    // Stage 2: Lookup channel details
+    {
+      $lookup: {
+        from: "users",
+        localField: "channel",
+        foreignField: "_id",
+        as: "channelDetails",
+        pipeline: [
+          // Nested lookup: count channel's subscribers
+          {
+            $lookup: {
+              from: "subs",
+              localField: "_id",
+              foreignField: "channel",
+              as: "subscribers",
+            },
+          },
+          {
+            $addFields: {
+              subscribersCount: { $size: "$subscribers" },
+            },
+          },
+          {
+            $project: {
+              username: 1,
+              fullName: 1,
+              avatar: 1,
+              subscribersCount: 1,
+            },
+          },
+        ],
+      },
+    },
+
+    // Stage 3: Flatten channel array
+    {
+      $addFields: {
+        channelDetails: { $first: "$channelDetails" },
+      },
+    },
+
+    // Stage 4: Filter out deleted channels
+    {
+      $match: {
+        channelDetails: { $ne: null },
+      },
+    },
+
+    // Stage 5: Sort by most recently subscribed
+    {
+      $sort: {
+        createdAt: -1,
+      },
+    },
+
+    // Stage 6: Project final structure
+    {
+      $project: {
+        channel: "$channelDetails",
+        subscribedAt: "$createdAt",
+      },
+    },
+  ];
+
+  // Paginate
+  const options = {
+    page: pageNumber,
+    limit: limitNumber,
+  };
+  const result = await Subs.aggregatePaginate(
+    Subs.aggregate(pipeline),
+    options
+  );
+
+  // Return Res
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        result,
+        "All Channel who subscribed are Fetched Successfully"
+      )
+    );
+});
+export { toggleSubscribe, getUserChannelSubscribers, getAllSubbedChannel };
