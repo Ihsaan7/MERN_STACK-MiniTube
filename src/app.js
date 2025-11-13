@@ -5,6 +5,7 @@ import userRouter from "./rotues/user.route.js";
 import videoRouter from "./rotues/video.route.js";
 import commentRouter from "./rotues/comment.route.js";
 import likeRouter from "./rotues/like.route.js";
+import subsRouter from "./rotues/subs.route.js";
 
 const app = express();
 
@@ -34,6 +35,9 @@ app.use("/api/v1/comments", commentRouter);
 
 // Like Route
 app.use("/api/v1/likes", likeRouter);
+
+// Subscriber Router
+app.use("/api/v1/subs", subsRouter);
 
 //404 Handler (must be after all routes)
 app.use((req, res) => {
