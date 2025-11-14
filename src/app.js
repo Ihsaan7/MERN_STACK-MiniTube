@@ -7,6 +7,7 @@ import commentRouter from "./rotues/comment.route.js";
 import likeRouter from "./rotues/like.route.js";
 import subsRouter from "./rotues/subs.route.js";
 import playlistRouter from "./rotues/playlist.route.js";
+import dashboardRouter from "./rotues/dashboard.route.js";
 
 const app = express();
 
@@ -14,16 +15,6 @@ app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ limit: "16kb", extended: true }));
 app.use(cors({ origin: true, credentials: true }));
 app.use(cookieParser());
-
-// //Health Check Route ( testing )
-// app.get("/health", (req, res) => res.status(200).json({ ok: true }));
-// // Testing Router for Error
-// app.get(
-//   "/test-error",
-//   asyncHandler(async (req, res) => {
-//     throw new ApiError(400, "This is a test Error");
-//   })
-// );
 
 // User Route
 app.use("/api/v1/users", userRouter);
@@ -42,6 +33,9 @@ app.use("/api/v1/subs", subsRouter);
 
 // Playlist Router
 app.use("/api/v1/playlists", playlistRouter);
+
+// Dashboard Router
+app.use("/api/v1/dashboards", dashboardRouter);
 
 //404 Handler (must be after all routes)
 app.use((req, res) => {
