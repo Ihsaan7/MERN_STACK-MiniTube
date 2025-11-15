@@ -1,12 +1,12 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App.jsx";
-import { AuthProvider } from "./context/AuthContext.jsx";
+import { useState } from "react";
+import "./App.css";
 
-ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <AuthProvider>
-      <App />
-    </AuthProvider>
-  </React.StrictMode>
-);
+function App() {
+  return (
+    <>
+      <h1 className="text-2xl border-2">Hi am working</h1>
+    </>
+  );
+}
+
+export default App;
