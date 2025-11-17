@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: "http://localhost:800/api/v1",
+  baseURL: "http://localhost:8000/api/v1",
   withCredentials: true,
   timeout: 10000,
 });
@@ -31,7 +31,7 @@ apiClient.interceptors.response.use(
 
       try {
         const response = await axios.post(
-          "http://localhost:8000/api/v1/refresh-token",
+          "http://localhost:8000/api/v1/users/refresh-token",
           {},
           { withCredentials: true }
         );
@@ -39,7 +39,7 @@ apiClient.interceptors.response.use(
         const newToken = response.data.data.accessToken;
         localStorage.setItem("accessToken", newToken);
 
-        error.config.header.Authorization = `Bearer ${newToken}`;
+        error.config.headers.Authorization = `Bearer ${newToken}`;
         return apiClient(error.config);
       } catch (refreshError) {
         console.error("Token refresh failed!");
