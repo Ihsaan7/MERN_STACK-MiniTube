@@ -18,21 +18,23 @@ export const AuthProvider = ({ children }) => {
       const token = localStorage.getItem("accessToken");
       if (token) {
         try {
-          const user = localStorage.getItem("user");
-          setUser(JSON.parse(user));
+          const userStr = localStorage.getItem("user");
+          if (userStr) {
+            setUser(JSON.parse(userStr));
+          }
 
-          const response = await apiClient.get("/users/profile", {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          const response = await apiClient.get("/users/profile");
 
-          setUser(response.data.user);
+          setUser(response.user);
           setIsLoggedIn(true);
-          setIsLoading(false);
         } catch (error) {
           console.error("Auth Check Failed: ", error);
           localStorage.removeItem("accessToken");
           localStorage.removeItem("user");
           setUser(null);
+          setIsLoggedIn(false);
+        } finally {
+          setIsLoading(false);
         }
       } else {
         setUser(null);

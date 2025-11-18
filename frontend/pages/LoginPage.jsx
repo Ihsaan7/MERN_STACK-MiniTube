@@ -37,8 +37,8 @@ const LoginPage = () => {
     try {
       const response = await login({ email, password, username }); // await the promise
 
-      if (response && response.data) {
-        handleLogin(response.data.user);
+      if (response && response.user) {
+        handleLogin(response.user);
         navigate("/home");
       }
     } catch (err) {
