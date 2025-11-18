@@ -19,14 +19,20 @@ export const AuthProvider = ({ children }) => {
       if (token) {
         try {
           const userStr = localStorage.getItem("user");
-          if (userStr) {
-            setUser(JSON.parse(userStr));
+          if (userStr && userStr !== "undefined" && userStr !== "null") {
+            const parsedUser = JSON.parse(userStr);
+            setUser(parsedUser);
+            setIsLoggedIn(true);
           }
 
+          // Always fetch fresh user data from server
           const response = await apiClient.get("/users/profile");
 
-          setUser(response.user);
-          setIsLoggedIn(true);
+          if (response && response.user) {
+            setUser(response.user);
+            setIsLoggedIn(true);
+            localStorage.setItem("user", JSON.stringify(response.user));
+          }
         } catch (error) {
           console.error("Auth Check Failed: ", error);
           localStorage.removeItem("accessToken");

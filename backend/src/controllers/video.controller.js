@@ -356,10 +356,10 @@ const getAllVideo = asyncHandler(async (req, res) => {
     if (!mongoose.isValidObjectId(userId)) {
       throw new ApiError(400, "Invalid userID!");
     }
+    pipeline.push({
+      $match: { owner: new mongoose.Types.ObjectId(userId) },
+    });
   }
-  pipeline.push({
-    $match: { owner: new mongoose.Types.ObjectId(userId) },
-  });
 
   // Show Query Videos
   if (query) {

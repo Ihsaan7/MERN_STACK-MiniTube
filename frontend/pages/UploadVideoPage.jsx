@@ -139,6 +139,8 @@ const UploadVideoPage = () => {
         navigate("/home");
       }
     } catch (err) {
+      console.error("Upload Error:", err);
+      console.error("Error Response:", err.response?.data);
       setError(
         err.response?.data?.message || "Upload failed. Please try again."
       );
@@ -149,29 +151,49 @@ const UploadVideoPage = () => {
 
   return (
     <Layout>
-      <div className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-neutral-950' : 'bg-neutral-50'}`}>
+      <div
+        className={`min-h-screen transition-colors duration-300 ${
+          isDark ? "bg-neutral-950" : "bg-neutral-50"
+        }`}
+      >
         <div className="container mx-auto px-6 py-12 max-w-5xl">
           {/* Header */}
           <div className="mb-8">
-            <h1 className={`text-4xl font-bold mb-2 ${isDark ? 'text-white' : 'text-neutral-900'}`}>
+            <h1
+              className={`text-4xl font-bold mb-2 ${
+                isDark ? "text-white" : "text-neutral-900"
+              }`}
+            >
               Upload Video
             </h1>
-            <p className={`${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
+            <p
+              className={`${isDark ? "text-neutral-400" : "text-neutral-600"}`}
+            >
               Share your content with the world
             </p>
           </div>
 
-          <div className={`border p-8 transition-all duration-300 ${
-            isDark 
-              ? 'bg-neutral-900 border-neutral-800' 
-              : 'bg-white border-neutral-200 shadow-lg'
-          }`}>
+          <div
+            className={`border p-8 transition-all duration-300 ${
+              isDark
+                ? "bg-neutral-900 border-neutral-800"
+                : "bg-white border-neutral-200 shadow-lg"
+            }`}
+          >
             {/* Error Message */}
             {error && (
-              <div className={`mb-6 p-4 border-l-4 border-red-500 animate-[slideIn_0.3s_ease-out] ${
-                isDark ? 'bg-red-950/50' : 'bg-red-50'
-              }`}>
-                <p className={`text-sm ${isDark ? 'text-red-400' : 'text-red-700'}`}>{error}</p>
+              <div
+                className={`mb-6 p-4 border-l-4 border-red-500 animate-[slideIn_0.3s_ease-out] ${
+                  isDark ? "bg-red-950/50" : "bg-red-50"
+                }`}
+              >
+                <p
+                  className={`text-sm ${
+                    isDark ? "text-red-400" : "text-red-700"
+                  }`}
+                >
+                  {error}
+                </p>
               </div>
             )}
 
@@ -179,14 +201,26 @@ const UploadVideoPage = () => {
             {loading && uploadProgress > 0 && (
               <div className="mb-6">
                 <div className="flex justify-between mb-2">
-                  <span className={`text-sm font-medium ${isDark ? 'text-neutral-300' : 'text-neutral-700'}`}>
+                  <span
+                    className={`text-sm font-medium ${
+                      isDark ? "text-neutral-300" : "text-neutral-700"
+                    }`}
+                  >
                     Uploading...
                   </span>
-                  <span className={`text-sm font-medium ${isDark ? 'text-neutral-300' : 'text-neutral-700'}`}>
+                  <span
+                    className={`text-sm font-medium ${
+                      isDark ? "text-neutral-300" : "text-neutral-700"
+                    }`}
+                  >
                     {uploadProgress}%
                   </span>
                 </div>
-                <div className={`w-full h-2 ${isDark ? 'bg-neutral-800' : 'bg-neutral-200'}`}>
+                <div
+                  className={`w-full h-2 ${
+                    isDark ? "bg-neutral-800" : "bg-neutral-200"
+                  }`}
+                >
                   <div
                     className="bg-orange-500 h-2 transition-all duration-300"
                     style={{ width: `${uploadProgress}%` }}
@@ -198,9 +232,14 @@ const UploadVideoPage = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Title */}
               <div className="group">
-                <label htmlFor="title" className={`block text-sm font-medium mb-2 transition-colors ${
-                  isDark ? 'text-neutral-300 group-focus-within:text-white' : 'text-neutral-700 group-focus-within:text-neutral-900'
-                }`}>
+                <label
+                  htmlFor="title"
+                  className={`block text-sm font-medium mb-2 transition-colors ${
+                    isDark
+                      ? "text-neutral-300 group-focus-within:text-white"
+                      : "text-neutral-700 group-focus-within:text-neutral-900"
+                  }`}
+                >
                   Title *
                 </label>
                 <input
@@ -211,9 +250,9 @@ const UploadVideoPage = () => {
                   onChange={handleChange}
                   placeholder="Enter video title"
                   className={`w-full px-4 py-3 border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
-                    isDark 
-                      ? 'bg-neutral-950 border-neutral-800 text-white placeholder-neutral-600 focus:border-orange-500 focus:ring-orange-500 focus:ring-offset-neutral-900' 
-                      : 'bg-white border-neutral-300 text-neutral-900 placeholder-neutral-400 focus:border-orange-500 focus:ring-orange-500 focus:ring-offset-white'
+                    isDark
+                      ? "bg-neutral-950 border-neutral-800 text-white placeholder-neutral-600 focus:border-orange-500 focus:ring-orange-500 focus:ring-offset-neutral-900"
+                      : "bg-white border-neutral-300 text-neutral-900 placeholder-neutral-400 focus:border-orange-500 focus:ring-orange-500 focus:ring-offset-white"
                   }`}
                   disabled={loading}
                 />
@@ -221,9 +260,14 @@ const UploadVideoPage = () => {
 
               {/* Description */}
               <div className="group">
-                <label htmlFor="description" className={`block text-sm font-medium mb-2 transition-colors ${
-                  isDark ? 'text-neutral-300 group-focus-within:text-white' : 'text-neutral-700 group-focus-within:text-neutral-900'
-                }`}>
+                <label
+                  htmlFor="description"
+                  className={`block text-sm font-medium mb-2 transition-colors ${
+                    isDark
+                      ? "text-neutral-300 group-focus-within:text-white"
+                      : "text-neutral-700 group-focus-within:text-neutral-900"
+                  }`}
+                >
                   Description *
                 </label>
                 <textarea
@@ -234,9 +278,9 @@ const UploadVideoPage = () => {
                   placeholder="Describe your video..."
                   rows="4"
                   className={`w-full px-4 py-3 border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 resize-none disabled:opacity-50 disabled:cursor-not-allowed ${
-                    isDark 
-                      ? 'bg-neutral-950 border-neutral-800 text-white placeholder-neutral-600 focus:border-orange-500 focus:ring-orange-500 focus:ring-offset-neutral-900' 
-                      : 'bg-white border-neutral-300 text-neutral-900 placeholder-neutral-400 focus:border-orange-500 focus:ring-orange-500 focus:ring-offset-white'
+                    isDark
+                      ? "bg-neutral-950 border-neutral-800 text-white placeholder-neutral-600 focus:border-orange-500 focus:ring-orange-500 focus:ring-offset-neutral-900"
+                      : "bg-white border-neutral-300 text-neutral-900 placeholder-neutral-400 focus:border-orange-500 focus:ring-orange-500 focus:ring-offset-white"
                   }`}
                   disabled={loading}
                 />
@@ -246,10 +290,22 @@ const UploadVideoPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Video File Upload */}
                 <div className="group">
-                  <label htmlFor="videoFile" className={`block text-sm font-medium mb-2 transition-colors ${
-                    isDark ? 'text-neutral-300 group-focus-within:text-white' : 'text-neutral-700 group-focus-within:text-neutral-900'
-                  }`}>
-                    Video File * <span className={`text-xs ${isDark ? 'text-neutral-500' : 'text-neutral-500'}`}>(Max 5MB)</span>
+                  <label
+                    htmlFor="videoFile"
+                    className={`block text-sm font-medium mb-2 transition-colors ${
+                      isDark
+                        ? "text-neutral-300 group-focus-within:text-white"
+                        : "text-neutral-700 group-focus-within:text-neutral-900"
+                    }`}
+                  >
+                    Video File *{" "}
+                    <span
+                      className={`text-xs ${
+                        isDark ? "text-neutral-500" : "text-neutral-500"
+                      }`}
+                    >
+                      (Max 5MB)
+                    </span>
                   </label>
                   <input
                     type="file"
@@ -257,9 +313,9 @@ const UploadVideoPage = () => {
                     accept="video/*"
                     onChange={handleVideoChange}
                     className={`w-full px-4 py-3 border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:cursor-pointer ${
-                      isDark 
-                        ? 'bg-neutral-950 border-neutral-800 text-white file:bg-orange-500 file:text-white hover:file:bg-orange-600 focus:border-orange-500 focus:ring-orange-500 focus:ring-offset-neutral-900' 
-                        : 'bg-white border-neutral-300 text-neutral-900 file:bg-orange-500 file:text-white hover:file:bg-orange-600 focus:border-orange-500 focus:ring-orange-500 focus:ring-offset-white'
+                      isDark
+                        ? "bg-neutral-950 border-neutral-800 text-white file:bg-orange-500 file:text-white hover:file:bg-orange-600 focus:border-orange-500 focus:ring-orange-500 focus:ring-offset-neutral-900"
+                        : "bg-white border-neutral-300 text-neutral-900 file:bg-orange-500 file:text-white hover:file:bg-orange-600 focus:border-orange-500 focus:ring-orange-500 focus:ring-offset-white"
                     }`}
                     disabled={loading}
                   />
@@ -268,7 +324,9 @@ const UploadVideoPage = () => {
                       <video
                         src={videoPreview}
                         controls
-                        className={`w-full max-h-48 border ${isDark ? 'border-neutral-800' : 'border-neutral-300'}`}
+                        className={`w-full max-h-48 border ${
+                          isDark ? "border-neutral-800" : "border-neutral-300"
+                        }`}
                       />
                     </div>
                   )}
@@ -276,10 +334,22 @@ const UploadVideoPage = () => {
 
                 {/* Thumbnail Upload */}
                 <div className="group">
-                  <label htmlFor="thumbnail" className={`block text-sm font-medium mb-2 transition-colors ${
-                    isDark ? 'text-neutral-300 group-focus-within:text-white' : 'text-neutral-700 group-focus-within:text-neutral-900'
-                  }`}>
-                    Thumbnail * <span className={`text-xs ${isDark ? 'text-neutral-500' : 'text-neutral-500'}`}>(Max 5MB)</span>
+                  <label
+                    htmlFor="thumbnail"
+                    className={`block text-sm font-medium mb-2 transition-colors ${
+                      isDark
+                        ? "text-neutral-300 group-focus-within:text-white"
+                        : "text-neutral-700 group-focus-within:text-neutral-900"
+                    }`}
+                  >
+                    Thumbnail *{" "}
+                    <span
+                      className={`text-xs ${
+                        isDark ? "text-neutral-500" : "text-neutral-500"
+                      }`}
+                    >
+                      (Max 5MB)
+                    </span>
                   </label>
                   <input
                     type="file"
@@ -287,9 +357,9 @@ const UploadVideoPage = () => {
                     accept="image/*"
                     onChange={handleThumbnailChange}
                     className={`w-full px-4 py-3 border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:cursor-pointer ${
-                      isDark 
-                        ? 'bg-neutral-950 border-neutral-800 text-white file:bg-orange-500 file:text-white hover:file:bg-orange-600 focus:border-orange-500 focus:ring-orange-500 focus:ring-offset-neutral-900' 
-                        : 'bg-white border-neutral-300 text-neutral-900 file:bg-orange-500 file:text-white hover:file:bg-orange-600 focus:border-orange-500 focus:ring-orange-500 focus:ring-offset-white'
+                      isDark
+                        ? "bg-neutral-950 border-neutral-800 text-white file:bg-orange-500 file:text-white hover:file:bg-orange-600 focus:border-orange-500 focus:ring-orange-500 focus:ring-offset-neutral-900"
+                        : "bg-white border-neutral-300 text-neutral-900 file:bg-orange-500 file:text-white hover:file:bg-orange-600 focus:border-orange-500 focus:ring-orange-500 focus:ring-offset-white"
                     }`}
                     disabled={loading}
                   />
@@ -298,7 +368,9 @@ const UploadVideoPage = () => {
                       <img
                         src={thumbnailPreview}
                         alt="Thumbnail preview"
-                        className={`w-full max-h-48 object-cover border ${isDark ? 'border-neutral-800' : 'border-neutral-300'}`}
+                        className={`w-full max-h-48 object-cover border ${
+                          isDark ? "border-neutral-800" : "border-neutral-300"
+                        }`}
                       />
                     </div>
                   )}
@@ -311,9 +383,9 @@ const UploadVideoPage = () => {
                   type="button"
                   onClick={() => navigate("/home")}
                   className={`px-6 py-3 border font-semibold transition-all duration-200 hover:scale-105 active:scale-95 ${
-                    isDark 
-                      ? 'border-neutral-700 text-neutral-300 hover:bg-neutral-800' 
-                      : 'border-neutral-300 text-neutral-700 hover:bg-neutral-50'
+                    isDark
+                      ? "border-neutral-700 text-neutral-300 hover:bg-neutral-800"
+                      : "border-neutral-300 text-neutral-700 hover:bg-neutral-50"
                   }`}
                   disabled={loading}
                 >
@@ -324,15 +396,32 @@ const UploadVideoPage = () => {
                   disabled={loading}
                   className={`px-6 py-3 font-semibold transition-all duration-200 ${
                     loading
-                      ? isDark ? 'bg-neutral-800 text-neutral-500 cursor-not-allowed' : 'bg-neutral-200 text-neutral-400 cursor-not-allowed'
-                      : 'bg-orange-500 hover:bg-orange-600 text-white hover:scale-105 active:scale-95'
+                      ? isDark
+                        ? "bg-neutral-800 text-neutral-500 cursor-not-allowed"
+                        : "bg-neutral-200 text-neutral-400 cursor-not-allowed"
+                      : "bg-orange-500 hover:bg-orange-600 text-white hover:scale-105 active:scale-95"
                   }`}
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">
-                      <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      <svg
+                        className="animate-spin h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        />
                       </svg>
                       Uploading...
                     </span>
