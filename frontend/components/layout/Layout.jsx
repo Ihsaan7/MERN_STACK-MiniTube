@@ -1,8 +1,8 @@
-import { useState } from "react";
 import Navbar from "./Navbar";
+import { useTheme } from "../../context/ThemeContext";
 
 const Layout = ({ children }) => {
-  const [isDark] = useState(true);
+  const { isDark } = useTheme();
 
   return (
     <div className={`min-h-screen transition-colors duration-300 ${

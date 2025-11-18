@@ -3,6 +3,7 @@ import "./App.css";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import HomePage from "../pages/HomePage";
+import UploadVideoPage from "../pages/UploadVideoPage";
 import ProtectedRoute from "../components/ProtectedRoutes";
 
 function App() {
@@ -20,6 +21,16 @@ function App() {
         element={
           <ProtectedRoute>
             <HomePage />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Route - Upload Video */}
+      <Route
+        path="/upload"
+        element={
+          <ProtectedRoute>
+            <UploadVideoPage />
           </ProtectedRoute>
         }
       />

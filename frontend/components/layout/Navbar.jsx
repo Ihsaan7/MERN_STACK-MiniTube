@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useTheme } from "../../context/ThemeContext";
 
 const Navbar = () => {
   const { user, isLoggedIn, handleLogout } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [showDropdown, setShowDropdown] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [isDark, setIsDark] = useState(true);
 
   const onLogout = async () => {
     await handleLogout();
@@ -69,7 +70,7 @@ const Navbar = () => {
           <div className="flex items-center gap-3">
             {/* Theme Toggle */}
             <button
-              onClick={() => setIsDark(!isDark)}
+              onClick={toggleTheme}
               className={`p-2 border transition-all duration-300 hover:scale-110 ${
                 isDark 
                   ? 'bg-neutral-900 border-neutral-800 text-white hover:bg-neutral-800' 
