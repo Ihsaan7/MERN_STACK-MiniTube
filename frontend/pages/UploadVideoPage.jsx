@@ -139,8 +139,6 @@ const UploadVideoPage = () => {
         navigate("/home");
       }
     } catch (err) {
-      console.error("Upload Error:", err);
-      console.error("Error Response:", err.response?.data);
       setError(
         err.response?.data?.message || "Upload failed. Please try again."
       );
