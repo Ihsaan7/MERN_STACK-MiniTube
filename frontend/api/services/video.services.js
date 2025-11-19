@@ -67,6 +67,16 @@ export const deleteVideo = async (videoId) => {
   }
 };
 
+// ==================== INCREMENT VIDEO VIEW ====================
+export const incrementVideoView = async (videoId) => {
+  try {
+    const response = await apiClient.post(`/videos/increment-view/${videoId}`);
+    return response;
+  } catch (err) {
+    throw err;
+  }
+};
+
 // ==================== UPDATE VIDEO PUBLISH STATUS ====================
 export const togglePublishStatus = async (videoId) => {
   try {

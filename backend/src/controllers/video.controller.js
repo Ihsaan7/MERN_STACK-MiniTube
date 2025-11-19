@@ -126,10 +126,26 @@ const getVideo = asyncHandler(async (req, res) => {
     }
   }
 
+  // NOTE: View count is now incremented via separate incrementView endpoint
+  // This prevents views from incrementing on every page load
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, videoData, "Video Fetched Successfully"));
+});
+
+const incrementView = asyncHandler(async (req, res) => {
+  const { videoID } = req.params;
+  if (!videoID || !mongoose.isValidObjectId(videoID)) {
+    throw new ApiError(400, "Video Id is invalid!");
+  }
+
+  // Increment view count
   await Video.findByIdAndUpdate(videoID, {
     $inc: { view: 1 },
   });
 
+  // Add to watch history if user is logged in
   if (req.user) {
     await User.findByIdAndUpdate(req.user._id, {
       $addToSet: { watchHistory: videoID },
@@ -138,7 +154,7 @@ const getVideo = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, videoData, "Video Fetched Successfully"));
+    .json(new ApiResponse(200, {}, "View incremented successfully"));
 });
 
 const updatePublish = asyncHandler(async (req, res) => {
@@ -462,6 +478,7 @@ const getAllVideo = asyncHandler(async (req, res) => {
 export {
   uploadVideo,
   getVideo,
+  incrementView,
   updatePublish,
   updateContent,
   updateVideo,

@@ -4,6 +4,7 @@ import verifyJWT from "../middlewares/auth.mware.js";
 import {
   getAllVideo,
   getVideo,
+  incrementView,
   removeVideo,
   updateContent,
   updatePublish,
@@ -34,6 +35,8 @@ router.route("/upload-video").post(
 );
 
 router.route("/watch/:videoID").get(getVideo);
+
+router.route("/increment-view/:videoID").post(incrementView);
 
 router.route("/update-publish/:videoID").patch(updatePublish);
 

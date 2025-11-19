@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getVideo } from "../api/services/video.services";
+import { getVideo, incrementVideoView } from "../api/services/video.services";
 import { likeVideo } from "../api/services/like.services";
 import { toggleSubscribe } from "../api/services/subscription.services";
 import { addComment, getAllComments } from "../api/services/comment.services";
@@ -22,10 +22,13 @@ const VideoPlayerPage = () => {
   const [isDisliked, setIsDisliked] = useState(false);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
+  const [hasIncrementedView, setHasIncrementedView] = useState(false);
+  const videoRef = useRef(null);
 
   useEffect(() => {
     fetchVideo();
     fetchComments();
+    setHasIncrementedView(false); // Reset on video change
   }, [videoId]);
 
   const fetchVideo = async () => {
@@ -46,9 +49,17 @@ const VideoPlayerPage = () => {
   const fetchComments = async () => {
     try {
       const response = await getAllComments(videoId);
-      setComments(response.data?.comments || response.data || []);
+      const commentsData = response.data?.comments || response.data || [];
+
+      // Ensure it's always an array
+      if (Array.isArray(commentsData)) {
+        setComments(commentsData);
+      } else {
+        setComments([]);
+      }
     } catch (err) {
       console.error("Failed to load comments:", err);
+      setComments([]); // Set empty array on error
     }
   };
 
@@ -156,6 +167,22 @@ const VideoPlayerPage = () => {
     return views;
   };
 
+  const handleVideoPlay = async () => {
+    if (!hasIncrementedView) {
+      try {
+        await incrementVideoView(videoId);
+        setHasIncrementedView(true);
+        // Update local view count
+        setVideo((prev) => ({
+          ...prev,
+          view: (prev.view || 0) + 1,
+        }));
+      } catch (err) {
+        console.error("Failed to increment view:", err);
+      }
+    }
+  };
+
   if (loading) {
     return (
       <Layout>
@@ -213,11 +240,12 @@ const VideoPlayerPage = () => {
             {/* Video Player */}
             <div className="bg-black aspect-video">
               <video
+                ref={videoRef}
                 className="w-full h-full"
                 controls
-                autoPlay
                 src={video.videoFile}
                 poster={video.thumbnail}
+                onPlay={handleVideoPlay}
               >
                 Your browser does not support the video tag.
               </video>
@@ -296,7 +324,7 @@ const VideoPlayerPage = () => {
                   isDark ? "text-neutral-400" : "text-neutral-600"
                 }`}
               >
-                <span>{formatViews(video.views)} views</span>
+                <span>{formatViews(video.view || 0)} views</span>
                 <span>•</span>
                 <span>{formatDate(video.createdAt)}</span>
               </div>
@@ -418,94 +446,95 @@ const VideoPlayerPage = () => {
 
               {/* Comments List */}
               <div className="space-y-6">
-                {comments.map((comment) => (
-                  <div key={comment._id} className="flex gap-3">
-                    <img
-                      src={comment.owner?.avatar || "/default-avatar.png"}
-                      alt={comment.owner?.username}
-                      className="w-10 h-10 rounded-full object-cover"
-                    />
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span
-                          className={`font-semibold text-sm ${
-                            isDark ? "text-white" : "text-neutral-900"
-                          }`}
-                        >
-                          {comment.owner?.username}
-                        </span>
-                        <span
-                          className={`text-xs font-medium ${
-                            isDark ? "text-neutral-500" : "text-neutral-500"
-                          }`}
-                        >
-                          {formatDate(comment.createdAt)}
-                        </span>
-                      </div>
-                      <p
-                        className={`text-sm mb-2 ${
-                          isDark ? "text-neutral-300" : "text-neutral-700"
-                        }`}
-                      >
-                        {comment.content}
-                      </p>
-                      <div className="flex items-center gap-4">
-                        <button
-                          className={`flex items-center gap-1 text-sm font-medium transition-colors ${
-                            isDark
-                              ? "text-neutral-400 hover:text-white"
-                              : "text-neutral-600 hover:text-neutral-900"
-                          }`}
-                        >
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
+                {Array.isArray(comments) &&
+                  comments.map((comment) => (
+                    <div key={comment._id} className="flex gap-3">
+                      <img
+                        src={comment.owner?.avatar || "/default-avatar.png"}
+                        alt={comment.owner?.username}
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span
+                            className={`font-semibold text-sm ${
+                              isDark ? "text-white" : "text-neutral-900"
+                            }`}
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"
-                            />
-                          </svg>
-                          <span>0</span>
-                        </button>
-                        <button
-                          className={`flex items-center gap-1 text-sm font-medium transition-colors ${
-                            isDark
-                              ? "text-neutral-400 hover:text-white"
-                              : "text-neutral-600 hover:text-neutral-900"
-                          }`}
-                        >
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
+                            {comment.owner?.username}
+                          </span>
+                          <span
+                            className={`text-xs font-medium ${
+                              isDark ? "text-neutral-500" : "text-neutral-500"
+                            }`}
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5"
-                            />
-                          </svg>
-                        </button>
-                        <button
-                          className={`text-sm font-semibold transition-colors ${
-                            isDark
-                              ? "text-neutral-400 hover:text-white"
-                              : "text-neutral-600 hover:text-neutral-900"
+                            {formatDate(comment.createdAt)}
+                          </span>
+                        </div>
+                        <p
+                          className={`text-sm mb-2 ${
+                            isDark ? "text-neutral-300" : "text-neutral-700"
                           }`}
                         >
-                          Reply
-                        </button>
+                          {comment.content}
+                        </p>
+                        <div className="flex items-center gap-4">
+                          <button
+                            className={`flex items-center gap-1 text-sm font-medium transition-colors ${
+                              isDark
+                                ? "text-neutral-400 hover:text-white"
+                                : "text-neutral-600 hover:text-neutral-900"
+                            }`}
+                          >
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"
+                              />
+                            </svg>
+                            <span>0</span>
+                          </button>
+                          <button
+                            className={`flex items-center gap-1 text-sm font-medium transition-colors ${
+                              isDark
+                                ? "text-neutral-400 hover:text-white"
+                                : "text-neutral-600 hover:text-neutral-900"
+                            }`}
+                          >
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5"
+                              />
+                            </svg>
+                          </button>
+                          <button
+                            className={`text-sm font-semibold transition-colors ${
+                              isDark
+                                ? "text-neutral-400 hover:text-white"
+                                : "text-neutral-600 hover:text-neutral-900"
+                            }`}
+                          >
+                            Reply
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             </div>
           </div>
