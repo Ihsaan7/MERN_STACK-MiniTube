@@ -28,18 +28,14 @@ const ChannelPage = () => {
       setLoading(true);
       setError("");
 
+      // For now, viewing your own profile only (username param not used yet)
+      // Always use the logged-in user's full data which includes coverImage
+      setChannelData(user);
+
       // Fetch videos by this user
       const response = await getAllVideos({ userId: user?._id, limit: 50 });
       const videosData = response.data?.videos || [];
       setVideos(videosData);
-
-      // Extract channel info from first video or use current user
-      if (videosData.length > 0 && videosData[0].owner) {
-        setChannelData(videosData[0].owner);
-      } else {
-        // If no videos, use current logged-in user data
-        setChannelData(user);
-      }
     } catch (err) {
       setError("Failed to load channel data");
       console.error(err);
@@ -131,21 +127,23 @@ const ChannelPage = () => {
           isDark ? "bg-neutral-950" : "bg-neutral-50"
         }`}
       >
-        {/* Channel Banner - Only show if cover image exists */}
-        {channelData?.coverImage && (
-          <div className="relative h-48 md:h-64">
+        {/* Channel Banner */}
+        <div className="relative h-48 md:h-64 bg-gradient-to-r from-orange-500 to-red-500">
+          {channelData?.coverImage && (
             <img
               src={channelData.coverImage}
               alt="Channel Banner"
               className="w-full h-full object-cover"
             />
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Channel Info */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div
-            className={`${channelData?.coverImage ? '-mt-16' : 'pt-8'} pb-6 border-b ${
+            className={`${
+              channelData?.coverImage ? "-mt-16" : "pt-8"
+            } pb-6 border-b ${
               isDark ? "border-neutral-800" : "border-neutral-200"
             }`}
           >
@@ -155,7 +153,7 @@ const ChannelPage = () => {
                 src={channelData?.avatar || "/default-avatar.png"}
                 alt={channelData?.username}
                 className={`w-32 h-32 rounded-full border-4 shadow-xl object-cover ${
-                  isDark ? 'border-neutral-950' : 'border-white'
+                  isDark ? "border-neutral-950" : "border-white"
                 }`}
               />
 
