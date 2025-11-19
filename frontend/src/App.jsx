@@ -5,6 +5,7 @@ import RegisterPage from "../pages/RegisterPage";
 import HomePage from "../pages/HomePage";
 import UploadVideoPage from "../pages/UploadVideoPage";
 import VideoPlayerPage from "../pages/VideoPlayerPage";
+import ChannelPage from "../pages/ChannelPage";
 import ProtectedRoute from "../components/ProtectedRoutes";
 
 function App() {
@@ -42,6 +43,26 @@ function App() {
         element={
           <ProtectedRoute>
             <VideoPlayerPage />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Route - Channel Page */}
+      <Route
+        path="/channel/:username"
+        element={
+          <ProtectedRoute>
+            <ChannelPage />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Route - My Profile */}
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <ChannelPage />
           </ProtectedRoute>
         }
       />
