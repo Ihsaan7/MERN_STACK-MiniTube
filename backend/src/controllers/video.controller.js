@@ -370,9 +370,8 @@ const getAllVideo = asyncHandler(async (req, res) => {
       throw new ApiError(400, "Invalid userID!");
     }
     matchQuery.owner = new mongoose.Types.ObjectId(userId);
-    // If viewing own channel, show all videos (published + unpublished)
-    // Otherwise, only show published videos
-    if (req.user && req.user._id.toString() !== userId) {
+    // Only channel owner can see unpublished videos
+    if (!req.user || req.user._id.toString() !== userId) {
       matchQuery.isPublished = true;
     }
   } else {

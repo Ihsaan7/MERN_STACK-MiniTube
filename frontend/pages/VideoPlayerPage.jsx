@@ -679,7 +679,11 @@ const VideoPlayerPage = () => {
                   src={video.owner?.avatar || "/default-avatar.png"}
                   alt={video.owner?.username}
                   className="w-12 h-12 rounded-full object-cover cursor-pointer"
-                  onClick={() => navigate(`/channel/${video.owner?.username}`)}
+                  onClick={() => {
+                    if (user && video.owner?.username !== user.username) {
+                      navigate(`/channel/${video.owner?.username}`);
+                    }
+                  }}
                 />
                 <div>
                   <h3
@@ -688,9 +692,11 @@ const VideoPlayerPage = () => {
                         ? "text-white hover:text-neutral-300"
                         : "text-neutral-900 hover:text-neutral-600"
                     }`}
-                    onClick={() =>
-                      navigate(`/channel/${video.owner?.username}`)
-                    }
+                    onClick={() => {
+                      if (user && video.owner?.username !== user.username) {
+                        navigate(`/channel/${video.owner?.username}`);
+                      }
+                    }}
                   >
                     {video.owner?.fullName || video.owner?.username}
                   </h3>

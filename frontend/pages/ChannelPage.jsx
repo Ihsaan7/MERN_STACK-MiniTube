@@ -40,20 +40,31 @@ const ChannelPage = () => {
   const [actionMessage, setActionMessage] = useState({ type: "", text: "" });
 
   useEffect(() => {
-    fetchChannelData();
-  }, [username]);
+    // Use user.username if username param is missing (own profile)
+    const channelUsername = username || (user && user.username);
+    if (channelUsername) {
+      fetchChannelData(channelUsername);
+    }
+  }, [username, user]);
 
-  const fetchChannelData = async () => {
+  const fetchChannelData = async (channelUsername) => {
     try {
       setLoading(true);
       setError("");
 
-      // For now, viewing your own profile only (username param not used yet)
-      // Always use the logged-in user's full data which includes coverImage
-      setChannelData(user);
+      // Fetch channel info by username param
+      const apiClient = (await import("../api/axios.config")).default;
+      const channelRes = await apiClient.get(
+        `/users/channel/${channelUsername}`
+      );
+      setChannelData(channelRes.data);
 
-      // Fetch videos by this user
-      const response = await getAllVideos({ userId: user?._id, limit: 50 });
+      // Only show unpublished videos if viewing own profile
+      let videoParams = { userId: channelRes.data?._id, limit: 50 };
+      if (!user || user.username !== channelUsername) {
+        videoParams.isPublished = true;
+      }
+      const response = await getAllVideos(videoParams);
       const videosData = response.data?.videos || [];
       setVideos(videosData);
     } catch (err) {
@@ -120,7 +131,7 @@ const ChannelPage = () => {
       setActionMessage({ type: "success", text: "Video updated successfully" });
       setTimeout(() => {
         setShowEditModal(false);
-        fetchChannelData(); // Refresh videos
+        fetchChannelData(username || (user && user.username)); // Refresh videos
       }, 1500);
     } catch (err) {
       setActionMessage({
@@ -140,7 +151,7 @@ const ChannelPage = () => {
           setActionLoading(true);
           await deleteVideo(videoId);
           setToast({ message: "Video deleted successfully", type: "success" });
-          fetchChannelData(); // Refresh videos
+          fetchChannelData(username || (user && user.username)); // Refresh videos
         } catch (err) {
           setToast({
             message: err.response?.data?.message || "Failed to delete video",
@@ -165,7 +176,7 @@ const ChannelPage = () => {
           video.isPublished ? "unpublished" : "published"
         } successfully`,
       });
-      fetchChannelData(); // Refresh videos
+      fetchChannelData(username || (user && user.username)); // Refresh videos
     } catch (err) {
       setActionMessage({
         type: "error",
@@ -384,13 +395,21 @@ const ChannelPage = () => {
                       }`}
                     >
                       {isSubscribed && (
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        <svg
+                          className="w-4 h-4"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clipRule="evenodd"
+                          />
                         </svg>
                       )}
                       {isSubscribed ? "Subscribed" : "Subscribe"}
                     </button>
-                    
+
                     {/* Confetti Animation */}
                     {showConfetti && (
                       <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -399,11 +418,18 @@ const ChannelPage = () => {
                             key={i}
                             className="absolute w-2 h-2 animate-confetti"
                             style={{
-                              left: '50%',
-                              top: '50%',
-                              backgroundColor: ['#f97316', '#fb923c', '#fdba74', '#fed7aa'][i % 4],
+                              left: "50%",
+                              top: "50%",
+                              backgroundColor: [
+                                "#f97316",
+                                "#fb923c",
+                                "#fdba74",
+                                "#fed7aa",
+                              ][i % 4],
                               animationDelay: `${i * 50}ms`,
-                              transform: `rotate(${i * 18}deg) translateY(-${20 + i * 5}px)`,
+                              transform: `rotate(${i * 18}deg) translateY(-${
+                                20 + i * 5
+                              }px)`,
                               opacity: 0,
                             }}
                           />
@@ -614,7 +640,12 @@ const ChannelPage = () => {
                   </div>
                   <div>
                     <p className="text-sm font-semibold mb-1">Email</p>
-                    <p>{channelData?.email}</p>
+                    {user && user.username === username && (
+                      <div>
+                        <p className="text-sm font-semibold mb-1">Email</p>
+                        <p>{channelData?.email}</p>
+                      </div>
+                    )}
                   </div>
                   <div>
                     <p className="text-sm font-semibold mb-1">Stats</p>

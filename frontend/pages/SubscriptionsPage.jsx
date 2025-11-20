@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { getMySubscriptions } from "../api/services/subscription.services";
 import { useTheme } from "../context/ThemeContext";
 import Layout from "../components/layout/Layout";
+import { useAuth } from "../context/AuthContext";
 
 const SubscriptionsPage = () => {
   const { isDark } = useTheme();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [subscriptions, setSubscriptions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,6 +36,11 @@ const SubscriptionsPage = () => {
   };
 
   const handleChannelClick = (username) => {
+    // Prevent redirecting to own channel
+    if (user && username === user.username) {
+      // Optionally show a toast or do nothing
+      return;
+    }
     navigate(`/channel/${username}`);
   };
 
