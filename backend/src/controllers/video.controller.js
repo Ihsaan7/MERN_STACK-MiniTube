@@ -11,7 +11,7 @@ import User from "../models/user.model.js";
 
 const uploadVideo = asyncHandler(async (req, res) => {
   // Get data
-  const { title, description } = req.body;
+  const { title, description, isPublished } = req.body;
   if (!(title && description)) {
     throw new ApiError(400, "Both fields are required!");
   }
@@ -47,6 +47,7 @@ const uploadVideo = asyncHandler(async (req, res) => {
     duration: videoDuration,
     thumbnail: thumbnailUrl,
     owner: req.user._id,
+    isPublished: isPublished === "true" || isPublished === true,
   });
 
   // Return res as video
@@ -359,23 +360,27 @@ const getAllVideo = asyncHandler(async (req, res) => {
   const limitNumber = parseInt(limit) || 10;
   const skip = (page - 1) * limit;
 
-  // Get PublishedVideos only
+  // Build initial match query
   const pipeline = [];
-  pipeline.push({
-    $match: {
-      isPublished: true,
-    },
-  });
+  const matchQuery = {};
 
-  // Show Channel Videos
+  // Show Channel Videos (all videos if viewing own channel)
   if (userId) {
     if (!mongoose.isValidObjectId(userId)) {
       throw new ApiError(400, "Invalid userID!");
     }
-    pipeline.push({
-      $match: { owner: new mongoose.Types.ObjectId(userId) },
-    });
+    matchQuery.owner = new mongoose.Types.ObjectId(userId);
+    // If viewing own channel, show all videos (published + unpublished)
+    // Otherwise, only show published videos
+    if (req.user && req.user._id.toString() !== userId) {
+      matchQuery.isPublished = true;
+    }
+  } else {
+    // Get published videos only for home feed
+    matchQuery.isPublished = true;
   }
+
+  pipeline.push({ $match: matchQuery });
 
   // Show Query Videos
   if (query) {
@@ -443,6 +448,7 @@ const getAllVideo = asyncHandler(async (req, res) => {
       view: 1,
       createdAt: 1,
       owner: 1,
+      isPublished: 1,
     },
   });
 

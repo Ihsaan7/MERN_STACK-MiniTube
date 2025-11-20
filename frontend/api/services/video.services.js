@@ -86,3 +86,26 @@ export const togglePublishStatus = async (videoId) => {
     throw err;
   }
 };
+
+// ==================== UPDATE VIDEO CONTENT ====================
+export const updateVideoContent = async (videoId, contentData) => {
+  try {
+    const formData = new FormData();
+    formData.append("title", contentData.title);
+    formData.append("description", contentData.description);
+    if (contentData.thumbnail) {
+      formData.append("thumbnail", contentData.thumbnail);
+    }
+
+    const response = await apiClient.patch(
+      `/videos/update-content/${videoId}`,
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
+    return response;
+  } catch (err) {
+    throw err;
+  }
+};

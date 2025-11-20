@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getAllVideos } from "../api/services/video.services";
+import {
+  getAllVideos,
+  deleteVideo,
+  updateVideoContent,
+  togglePublishStatus,
+} from "../api/services/video.services";
 import { toggleSubscribe } from "../api/services/subscription.services";
 import Layout from "../components/layout/Layout";
 import { useAuth } from "../context/AuthContext";
@@ -18,6 +23,16 @@ const ChannelPage = () => {
   const [error, setError] = useState("");
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [activeTab, setActiveTab] = useState("videos");
+
+  // Video management states
+  const [editingVideo, setEditingVideo] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editTitle, setEditTitle] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [editThumbnail, setEditThumbnail] = useState(null);
+  const [editThumbnailPreview, setEditThumbnailPreview] = useState("");
+  const [actionLoading, setActionLoading] = useState(false);
+  const [actionMessage, setActionMessage] = useState({ type: "", text: "" });
 
   useEffect(() => {
     fetchChannelData();
@@ -51,6 +66,95 @@ const ChannelPage = () => {
     } catch (err) {
       console.error("Subscribe error:", err);
       alert("Failed to subscribe. Please try again.");
+    }
+  };
+
+  const handleEditVideo = (video) => {
+    setEditingVideo(video);
+    setEditTitle(video.title);
+    setEditDescription(video.description);
+    setEditThumbnailPreview(video.thumbnail);
+    setEditThumbnail(null);
+    setShowEditModal(true);
+    setActionMessage({ type: "", text: "" });
+  };
+
+  const handleThumbnailChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setEditThumbnail(file);
+      setEditThumbnailPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleSaveEdit = async (e) => {
+    e.preventDefault();
+    if (!editTitle || !editDescription) {
+      setActionMessage({ type: "error", text: "Please fill all fields" });
+      return;
+    }
+
+    try {
+      setActionLoading(true);
+      await updateVideoContent(editingVideo._id, {
+        title: editTitle,
+        description: editDescription,
+        thumbnail: editThumbnail,
+      });
+
+      setActionMessage({ type: "success", text: "Video updated successfully" });
+      setTimeout(() => {
+        setShowEditModal(false);
+        fetchChannelData(); // Refresh videos
+      }, 1500);
+    } catch (err) {
+      setActionMessage({
+        type: "error",
+        text: err.response?.data?.message || "Failed to update video",
+      });
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleDeleteVideo = async (videoId) => {
+    if (!window.confirm("Are you sure you want to delete this video?")) {
+      return;
+    }
+
+    try {
+      setActionLoading(true);
+      await deleteVideo(videoId);
+      setActionMessage({ type: "success", text: "Video deleted successfully" });
+      fetchChannelData(); // Refresh videos
+    } catch (err) {
+      setActionMessage({
+        type: "error",
+        text: err.response?.data?.message || "Failed to delete video",
+      });
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleTogglePublish = async (video) => {
+    try {
+      setActionLoading(true);
+      await togglePublishStatus(video._id);
+      setActionMessage({
+        type: "success",
+        text: `Video ${
+          video.isPublished ? "unpublished" : "published"
+        } successfully`,
+      });
+      fetchChannelData(); // Refresh videos
+    } catch (err) {
+      setActionMessage({
+        type: "error",
+        text: err.response?.data?.message || "Failed to toggle publish status",
+      });
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -299,15 +403,17 @@ const ChannelPage = () => {
                     {videos.map((video) => (
                       <div
                         key={video._id}
-                        className={`border overflow-hidden cursor-pointer transition-all duration-200 group ${
+                        className={`border overflow-hidden transition-all duration-200 group relative ${
                           isDark
                             ? "bg-neutral-900 border-neutral-800 hover:border-neutral-700"
                             : "bg-white border-neutral-200 hover:border-neutral-300 shadow-md hover:shadow-xl"
                         }`}
-                        onClick={() => navigate(`/video/${video._id}`)}
                       >
                         {/* Thumbnail */}
-                        <div className="relative overflow-hidden">
+                        <div
+                          className="relative overflow-hidden cursor-pointer"
+                          onClick={() => navigate(`/video/${video._id}`)}
+                        >
                           <img
                             src={video.thumbnail}
                             alt={video.title}
@@ -316,21 +422,27 @@ const ChannelPage = () => {
                           <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-1 font-medium">
                             {formatDuration(video.duration)}
                           </div>
+                          {!video.isPublished && (
+                            <div className="absolute top-2 left-2 bg-yellow-500 text-black text-xs px-2 py-1 font-bold">
+                              UNPUBLISHED
+                            </div>
+                          )}
                         </div>
 
                         {/* Video Info */}
                         <div className="p-4">
                           <h4
-                            className={`font-semibold tracking-tight line-clamp-2 mb-2 ${
+                            className={`font-semibold tracking-tight line-clamp-2 mb-2 cursor-pointer ${
                               isDark ? "text-white" : "text-neutral-900"
                             }`}
+                            onClick={() => navigate(`/video/${video._id}`)}
                           >
                             {video.title}
                           </h4>
 
                           {/* Stats */}
                           <div
-                            className={`flex items-center gap-2 text-xs font-semibold ${
+                            className={`flex items-center gap-2 text-xs font-semibold mb-3 ${
                               isDark ? "text-neutral-500" : "text-neutral-500"
                             }`}
                           >
@@ -338,6 +450,43 @@ const ChannelPage = () => {
                             <span>•</span>
                             <span>{timeAgo(video.createdAt)}</span>
                           </div>
+
+                          {/* Action Buttons (Own Channel Only) */}
+                          {isOwnChannel && (
+                            <div className="flex gap-2">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleEditVideo(video);
+                                }}
+                                className="flex-1 bg-orange-500 hover:bg-orange-600 text-white text-xs py-2 px-3 font-semibold transition-colors"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleTogglePublish(video);
+                                }}
+                                className={`flex-1 text-xs py-2 px-3 font-semibold transition-colors ${
+                                  video.isPublished
+                                    ? "bg-yellow-500 hover:bg-yellow-600 text-black"
+                                    : "bg-green-500 hover:bg-green-600 text-white"
+                                }`}
+                              >
+                                {video.isPublished ? "Unpublish" : "Publish"}
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteVideo(video._id);
+                                }}
+                                className="bg-red-500 hover:bg-red-600 text-white text-xs py-2 px-3 font-semibold transition-colors"
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          )}
                         </div>
                       </div>
                     ))}
@@ -385,6 +534,149 @@ const ChannelPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Edit Video Modal */}
+      {showEditModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div
+            className={`max-w-2xl w-full max-h-[90vh] overflow-y-auto ${
+              isDark ? "bg-neutral-900" : "bg-white"
+            }`}
+          >
+            <div className="p-6">
+              <h2
+                className={`text-2xl font-bold mb-4 ${
+                  isDark ? "text-white" : "text-neutral-900"
+                }`}
+              >
+                Edit Video
+              </h2>
+
+              {/* Message */}
+              {actionMessage.text && (
+                <div
+                  className={`p-3 mb-4 border ${
+                    actionMessage.type === "success"
+                      ? isDark
+                        ? "bg-green-950/20 border-green-900/50 text-green-400"
+                        : "bg-green-50 border-green-200 text-green-700"
+                      : isDark
+                      ? "bg-red-950/20 border-red-900/50 text-red-400"
+                      : "bg-red-50 border-red-200 text-red-700"
+                  }`}
+                >
+                  {actionMessage.text}
+                </div>
+              )}
+
+              <form onSubmit={handleSaveEdit} className="space-y-4">
+                {/* Thumbnail */}
+                <div>
+                  <label
+                    className={`block text-sm font-medium mb-2 ${
+                      isDark ? "text-neutral-300" : "text-neutral-700"
+                    }`}
+                  >
+                    Thumbnail
+                  </label>
+                  <img
+                    src={editThumbnailPreview}
+                    alt="Thumbnail preview"
+                    className="w-full h-48 object-cover border-2 border-orange-500 mb-2"
+                  />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleThumbnailChange}
+                    className={`w-full px-3 py-2 border text-sm ${
+                      isDark
+                        ? "bg-neutral-950 border-neutral-800 text-white"
+                        : "bg-white border-neutral-300 text-neutral-900"
+                    }`}
+                  />
+                  <p
+                    className={`text-xs mt-1 ${
+                      isDark ? "text-neutral-500" : "text-neutral-500"
+                    }`}
+                  >
+                    Leave empty to keep current thumbnail
+                  </p>
+                </div>
+
+                {/* Title */}
+                <div>
+                  <label
+                    className={`block text-sm font-medium mb-2 ${
+                      isDark ? "text-neutral-300" : "text-neutral-700"
+                    }`}
+                  >
+                    Title
+                  </label>
+                  <input
+                    type="text"
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    className={`w-full px-4 py-2 border ${
+                      isDark
+                        ? "bg-neutral-950 border-neutral-800 text-white"
+                        : "bg-white border-neutral-300 text-neutral-900"
+                    }`}
+                    required
+                  />
+                </div>
+
+                {/* Description */}
+                <div>
+                  <label
+                    className={`block text-sm font-medium mb-2 ${
+                      isDark ? "text-neutral-300" : "text-neutral-700"
+                    }`}
+                  >
+                    Description
+                  </label>
+                  <textarea
+                    value={editDescription}
+                    onChange={(e) => setEditDescription(e.target.value)}
+                    rows={4}
+                    className={`w-full px-4 py-2 border resize-none ${
+                      isDark
+                        ? "bg-neutral-950 border-neutral-800 text-white"
+                        : "bg-white border-neutral-300 text-neutral-900"
+                    }`}
+                    required
+                  />
+                </div>
+
+                {/* Buttons */}
+                <div className="flex gap-3 pt-4">
+                  <button
+                    type="submit"
+                    disabled={actionLoading}
+                    className="flex-1 bg-orange-500 hover:bg-orange-600 disabled:bg-neutral-600 text-white py-3 font-semibold transition-all duration-200"
+                  >
+                    {actionLoading ? "Saving..." : "Save Changes"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowEditModal(false);
+                      setActionMessage({ type: "", text: "" });
+                    }}
+                    disabled={actionLoading}
+                    className={`flex-1 border py-3 font-semibold transition-colors ${
+                      isDark
+                        ? "border-neutral-800 text-neutral-300 hover:bg-neutral-800"
+                        : "border-neutral-300 text-neutral-700 hover:bg-neutral-50"
+                    }`}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </Layout>
   );
 };
