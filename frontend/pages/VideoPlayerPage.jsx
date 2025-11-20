@@ -1,6 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getVideo, incrementVideoView } from "../api/services/video.services";
+import {
+  getVideo,
+  incrementVideoView,
+  getAllVideos,
+} from "../api/services/video.services";
 import { likeVideo, likeComment } from "../api/services/like.services";
 import { toggleSubscribe } from "../api/services/subscription.services";
 import {
@@ -42,6 +46,8 @@ const VideoPlayerPage = () => {
   const [confirmDialog, setConfirmDialog] = useState(null);
   const [playlistsLoading, setPlaylistsLoading] = useState(false);
   const [addingToPlaylist, setAddingToPlaylist] = useState(null);
+  const [relatedVideos, setRelatedVideos] = useState([]);
+  const [relatedLoading, setRelatedLoading] = useState(false);
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -49,6 +55,13 @@ const VideoPlayerPage = () => {
     fetchComments();
     setHasIncrementedView(false); // Reset on video change
   }, [videoId]);
+
+  // Fetch related videos after video is loaded for better sorting
+  useEffect(() => {
+    if (video) {
+      fetchRelatedVideos();
+    }
+  }, [video?._id]);
 
   const fetchVideo = async () => {
     try {
@@ -84,6 +97,37 @@ const VideoPlayerPage = () => {
     }
   };
 
+  const fetchRelatedVideos = async () => {
+    try {
+      setRelatedLoading(true);
+      const response = await getAllVideos({ page: 1, limit: 20 });
+      const allVideos = response.data.videos || [];
+
+      // Filter out current video and sort by relevance
+      let filtered = allVideos.filter((v) => v._id !== videoId);
+
+      // If current video is loaded, prioritize same channel videos
+      if (video) {
+        filtered.sort((a, b) => {
+          // Same owner gets priority
+          const aIsSameOwner = a.owner?._id === video.owner?._id ? 1 : 0;
+          const bIsSameOwner = b.owner?._id === video.owner?._id ? 1 : 0;
+          if (aIsSameOwner !== bIsSameOwner) return bIsSameOwner - aIsSameOwner;
+
+          // Then by views
+          return (b.view || 0) - (a.view || 0);
+        });
+      }
+
+      setRelatedVideos(filtered.slice(0, 10));
+    } catch (err) {
+      console.error("Failed to load related videos:", err);
+      setRelatedVideos([]);
+    } finally {
+      setRelatedLoading(false);
+    }
+  };
+
   const handleSubscribe = async () => {
     try {
       await toggleSubscribe(video.owner._id);
@@ -101,7 +145,10 @@ const VideoPlayerPage = () => {
       });
     } catch (err) {
       console.error("Subscribe error:", err);
-      setToast({ message: "Failed to subscribe. Please try again.", type: "error" });
+      setToast({
+        message: "Failed to subscribe. Please try again.",
+        type: "error",
+      });
     }
   };
 
@@ -120,7 +167,10 @@ const VideoPlayerPage = () => {
       });
     } catch (err) {
       console.error("Like error:", err);
-      setToast({ message: "Failed to like video. Please try again.", type: "error" });
+      setToast({
+        message: "Failed to like video. Please try again.",
+        type: "error",
+      });
     }
   };
 
@@ -159,7 +209,10 @@ const VideoPlayerPage = () => {
       setComment("");
     } catch (err) {
       console.error("Comment error:", err);
-      setToast({ message: "Failed to add comment. Please try again.", type: "error" });
+      setToast({
+        message: "Failed to add comment. Please try again.",
+        type: "error",
+      });
     }
   };
 
@@ -191,6 +244,41 @@ const VideoPlayerPage = () => {
     if (views >= 1000000) return `${(views / 1000000).toFixed(1)}M`;
     if (views >= 1000) return `${(views / 1000).toFixed(1)}K`;
     return views;
+  };
+
+  const formatDuration = (seconds) => {
+    if (!seconds || seconds === 0) return "0:00";
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+    if (hrs > 0) {
+      return `${hrs}:${mins.toString().padStart(2, "0")}:${secs
+        .toString()
+        .padStart(2, "0")}`;
+    }
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  const timeAgo = (dateString) => {
+    if (!dateString) return "Just now";
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "Just now";
+    const seconds = Math.floor((new Date() - date) / 1000);
+    const intervals = {
+      year: 31536000,
+      month: 2592000,
+      week: 604800,
+      day: 86400,
+      hour: 3600,
+      minute: 60,
+    };
+    for (const [unit, secondsInUnit] of Object.entries(intervals)) {
+      const interval = Math.floor(seconds / secondsInUnit);
+      if (interval >= 1) {
+        return `${interval} ${unit}${interval > 1 ? "s" : ""} ago`;
+      }
+    }
+    return "Just now";
   };
 
   const handleVideoPlay = async () => {
@@ -231,7 +319,10 @@ const VideoPlayerPage = () => {
       setEditingCommentText("");
     } catch (err) {
       console.error("Failed to update comment:", err);
-      setToast({ message: "Failed to update comment. Please try again.", type: "error" });
+      setToast({
+        message: "Failed to update comment. Please try again.",
+        type: "error",
+      });
     }
   };
 
@@ -248,10 +339,16 @@ const VideoPlayerPage = () => {
           await deleteComment(commentId);
           // Remove comment from local state
           setComments(comments.filter((c) => c._id !== commentId));
-          setToast({ message: "Comment deleted successfully", type: "success" });
+          setToast({
+            message: "Comment deleted successfully",
+            type: "success",
+          });
         } catch (err) {
           console.error("Failed to delete comment:", err);
-          setToast({ message: "Failed to delete comment. Please try again.", type: "error" });
+          setToast({
+            message: "Failed to delete comment. Please try again.",
+            type: "error",
+          });
         }
         setConfirmDialog(null);
       },
@@ -771,22 +868,86 @@ const VideoPlayerPage = () => {
             </div>
           </div>
 
-          {/* Sidebar - Suggested Videos */}
+          {/* Sidebar - Related Videos */}
           <div className="lg:col-span-1">
             <h3
               className={`font-bold text-lg mb-4 ${
                 isDark ? "text-white" : "text-neutral-900"
               }`}
             >
-              Suggested Videos
+              Related Videos
             </h3>
-            <p
-              className={`text-sm font-medium ${
-                isDark ? "text-neutral-500" : "text-neutral-500"
-              }`}
-            >
-              Coming soon...
-            </p>
+
+            {relatedLoading ? (
+              <div className="flex justify-center py-8">
+                <div className="animate-spin h-8 w-8 border-4 border-orange-500 border-t-transparent rounded-full"></div>
+              </div>
+            ) : relatedVideos.length === 0 ? (
+              <p
+                className={`text-sm font-medium ${
+                  isDark ? "text-neutral-500" : "text-neutral-500"
+                }`}
+              >
+                No related videos found
+              </p>
+            ) : (
+              <div className="space-y-3">
+                {relatedVideos.map((relatedVideo) => (
+                  <div
+                    key={relatedVideo._id}
+                    onClick={() => navigate(`/video/${relatedVideo._id}`)}
+                    className={`flex gap-2 cursor-pointer group transition-all duration-200 ${
+                      isDark ? "hover:bg-neutral-900" : "hover:bg-neutral-50"
+                    }`}
+                  >
+                    {/* Thumbnail */}
+                    <div className="relative w-40 h-24 shrink-0 overflow-hidden">
+                      <img
+                        src={relatedVideo.thumbnail}
+                        alt={relatedVideo.title}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                      {relatedVideo.duration && (
+                        <div className="absolute bottom-1 right-1 bg-black/80 text-white text-xs px-1.5 py-0.5 font-medium">
+                          {formatDuration(relatedVideo.duration)}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <h4
+                        className={`text-sm font-semibold line-clamp-2 mb-1 ${
+                          isDark ? "text-white" : "text-neutral-900"
+                        }`}
+                      >
+                        {relatedVideo.title}
+                      </h4>
+                      <p
+                        className={`text-xs font-medium mb-1 ${
+                          isDark ? "text-neutral-400" : "text-neutral-600"
+                        }`}
+                      >
+                        {relatedVideo.owner?.username || "Unknown"}
+                      </p>
+                      <div
+                        className={`text-xs font-medium ${
+                          isDark ? "text-neutral-500" : "text-neutral-500"
+                        }`}
+                      >
+                        <span>{formatViews(relatedVideo.view || 0)} views</span>
+                        {relatedVideo.createdAt && (
+                          <>
+                            <span className="mx-1">•</span>
+                            <span>{timeAgo(relatedVideo.createdAt)}</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -876,7 +1037,7 @@ const VideoPlayerPage = () => {
                     >
                       <div className="flex items-center gap-3 flex-1 min-w-0">
                         <svg
-                          className={`w-5 h-5 flex-shrink-0 ${
+                          className={`w-5 h-5 shrink-0 ${
                             isDark ? "text-neutral-400" : "text-neutral-600"
                           }`}
                           fill="none"
