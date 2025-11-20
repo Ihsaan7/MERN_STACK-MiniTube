@@ -10,6 +10,7 @@ import SearchResultsPage from "../pages/SearchResultsPage";
 import SubscriptionsPage from "../pages/SubscriptionsPage";
 import WatchHistoryPage from "../pages/WatchHistoryPage";
 import LikedVideosPage from "../pages/LikedVideosPage";
+import SettingsPage from "../pages/SettingsPage";
 import ProtectedRoute from "../components/ProtectedRoutes";
 
 function App() {
@@ -107,6 +108,16 @@ function App() {
         element={
           <ProtectedRoute>
             <LikedVideosPage />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Route - Settings */}
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute>
+            <SettingsPage />
           </ProtectedRoute>
         }
       />

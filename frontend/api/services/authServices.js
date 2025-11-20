@@ -116,3 +116,60 @@ export const getWatchHistory = async () => {
     throw err;
   }
 };
+
+// ==================== UPDATE USER DETAILS ====================
+export const updateUserDetails = async (userData) => {
+  try {
+    const response = await apiClient.post("/users/update-detail", userData);
+    return response;
+  } catch (err) {
+    throw err;
+  }
+};
+
+// ==================== UPDATE PASSWORD ====================
+export const updatePassword = async (passwordData) => {
+  try {
+    const response = await apiClient.patch(
+      "/users/update-password",
+      passwordData
+    );
+    return response;
+  } catch (err) {
+    throw err;
+  }
+};
+
+// ==================== UPDATE AVATAR ====================
+export const updateAvatar = async (avatarFile) => {
+  try {
+    const formData = new FormData();
+    formData.append("avatar", avatarFile);
+
+    const response = await apiClient.patch("/users/update-avatar", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return response;
+  } catch (err) {
+    throw err;
+  }
+};
+
+// ==================== UPDATE COVER IMAGE ====================
+export const updateCoverImage = async (coverImageFile) => {
+  try {
+    const formData = new FormData();
+    formData.append("coverImage", coverImageFile);
+
+    const response = await apiClient.patch(
+      "/users/update-coverImage",
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
+    return response;
+  } catch (err) {
+    throw err;
+  }
+};
