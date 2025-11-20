@@ -9,6 +9,7 @@ import ChannelPage from "../pages/ChannelPage";
 import SearchResultsPage from "../pages/SearchResultsPage";
 import SubscriptionsPage from "../pages/SubscriptionsPage";
 import WatchHistoryPage from "../pages/WatchHistoryPage";
+import LikedVideosPage from "../pages/LikedVideosPage";
 import ProtectedRoute from "../components/ProtectedRoutes";
 
 function App() {
@@ -96,6 +97,16 @@ function App() {
         element={
           <ProtectedRoute>
             <WatchHistoryPage />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Route - Liked Videos */}
+      <Route
+        path="/liked-videos"
+        element={
+          <ProtectedRoute>
+            <LikedVideosPage />
           </ProtectedRoute>
         }
       />
