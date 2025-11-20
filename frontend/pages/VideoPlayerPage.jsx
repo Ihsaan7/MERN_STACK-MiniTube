@@ -16,6 +16,8 @@ import {
 import Layout from "../components/layout/Layout";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
+import Toast from "../components/ui/Toast";
+import ConfirmDialog from "../components/ui/ConfirmDialog";
 
 const VideoPlayerPage = () => {
   const { videoId } = useParams();
@@ -36,6 +38,8 @@ const VideoPlayerPage = () => {
   const [hasIncrementedView, setHasIncrementedView] = useState(false);
   const [showPlaylistModal, setShowPlaylistModal] = useState(false);
   const [playlists, setPlaylists] = useState([]);
+  const [toast, setToast] = useState(null);
+  const [confirmDialog, setConfirmDialog] = useState(null);
   const [playlistsLoading, setPlaylistsLoading] = useState(false);
   const [addingToPlaylist, setAddingToPlaylist] = useState(null);
   const videoRef = useRef(null);
@@ -97,7 +101,7 @@ const VideoPlayerPage = () => {
       });
     } catch (err) {
       console.error("Subscribe error:", err);
-      alert("Failed to subscribe. Please try again.");
+      setToast({ message: "Failed to subscribe. Please try again.", type: "error" });
     }
   };
 
@@ -116,7 +120,7 @@ const VideoPlayerPage = () => {
       });
     } catch (err) {
       console.error("Like error:", err);
-      alert("Failed to like video. Please try again.");
+      setToast({ message: "Failed to like video. Please try again.", type: "error" });
     }
   };
 
@@ -155,7 +159,7 @@ const VideoPlayerPage = () => {
       setComment("");
     } catch (err) {
       console.error("Comment error:", err);
-      alert("Failed to add comment. Please try again.");
+      setToast({ message: "Failed to add comment. Please try again.", type: "error" });
     }
   };
 
@@ -227,7 +231,7 @@ const VideoPlayerPage = () => {
       setEditingCommentText("");
     } catch (err) {
       console.error("Failed to update comment:", err);
-      alert("Failed to update comment. Please try again.");
+      setToast({ message: "Failed to update comment. Please try again.", type: "error" });
     }
   };
 
@@ -236,18 +240,23 @@ const VideoPlayerPage = () => {
     setEditingCommentText("");
   };
 
-  const handleDeleteComment = async (commentId) => {
-    if (!confirm("Are you sure you want to delete this comment?")) return;
-
-    try {
-      await deleteComment(commentId);
-
-      // Remove comment from local state
-      setComments(comments.filter((c) => c._id !== commentId));
-    } catch (err) {
-      console.error("Failed to delete comment:", err);
-      alert("Failed to delete comment. Please try again.");
-    }
+  const handleDeleteComment = (commentId) => {
+    setConfirmDialog({
+      message: "Are you sure you want to delete this comment?",
+      onConfirm: async () => {
+        try {
+          await deleteComment(commentId);
+          // Remove comment from local state
+          setComments(comments.filter((c) => c._id !== commentId));
+          setToast({ message: "Comment deleted successfully", type: "success" });
+        } catch (err) {
+          console.error("Failed to delete comment:", err);
+          setToast({ message: "Failed to delete comment. Please try again.", type: "error" });
+        }
+        setConfirmDialog(null);
+      },
+      onCancel: () => setConfirmDialog(null),
+    });
   };
 
   const handleLikeComment = async (commentId) => {
@@ -630,8 +639,18 @@ const VideoPlayerPage = () => {
                                   }`}
                                   title="Edit comment"
                                 >
-                                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                  <svg
+                                    className="w-3.5 h-3.5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                    />
                                   </svg>
                                   Edit
                                 </button>
@@ -646,8 +665,18 @@ const VideoPlayerPage = () => {
                                   }`}
                                   title="Delete comment"
                                 >
-                                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                  <svg
+                                    className="w-3.5 h-3.5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                    />
                                   </svg>
                                   Delete
                                 </button>
@@ -907,6 +936,24 @@ const VideoPlayerPage = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Toast Notification */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
+
+      {/* Confirm Dialog */}
+      {confirmDialog && (
+        <ConfirmDialog
+          message={confirmDialog.message}
+          onConfirm={confirmDialog.onConfirm}
+          onCancel={confirmDialog.onCancel}
+        />
       )}
     </Layout>
   );

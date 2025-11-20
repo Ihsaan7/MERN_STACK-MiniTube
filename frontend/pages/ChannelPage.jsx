@@ -10,6 +10,8 @@ import { toggleSubscribe } from "../api/services/subscription.services";
 import Layout from "../components/layout/Layout";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
+import Toast from "../components/ui/Toast";
+import ConfirmDialog from "../components/ui/ConfirmDialog";
 
 const ChannelPage = () => {
   const { username } = useParams();
@@ -23,6 +25,8 @@ const ChannelPage = () => {
   const [error, setError] = useState("");
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [activeTab, setActiveTab] = useState("videos");
+  const [toast, setToast] = useState(null);
+  const [confirmDialog, setConfirmDialog] = useState(null);
 
   // Video management states
   const [editingVideo, setEditingVideo] = useState(null);
@@ -65,7 +69,7 @@ const ChannelPage = () => {
       setIsSubscribed(!isSubscribed);
     } catch (err) {
       console.error("Subscribe error:", err);
-      alert("Failed to subscribe. Please try again.");
+      setToast({ message: "Failed to subscribe. Please try again.", type: "error" });
     }
   };
 
@@ -117,24 +121,28 @@ const ChannelPage = () => {
     }
   };
 
-  const handleDeleteVideo = async (videoId) => {
-    if (!window.confirm("Are you sure you want to delete this video?")) {
-      return;
-    }
+  const handleDeleteVideo = (videoId) => {
+    setConfirmDialog({
+      message: "Are you sure you want to delete this video?",
+      onConfirm: async () => {
 
-    try {
-      setActionLoading(true);
-      await deleteVideo(videoId);
-      setActionMessage({ type: "success", text: "Video deleted successfully" });
-      fetchChannelData(); // Refresh videos
-    } catch (err) {
-      setActionMessage({
-        type: "error",
-        text: err.response?.data?.message || "Failed to delete video",
-      });
-    } finally {
-      setActionLoading(false);
-    }
+        try {
+          setActionLoading(true);
+          await deleteVideo(videoId);
+          setToast({ message: "Video deleted successfully", type: "success" });
+          fetchChannelData(); // Refresh videos
+        } catch (err) {
+          setToast({
+            message: err.response?.data?.message || "Failed to delete video",
+            type: "error",
+          });
+        } finally {
+          setActionLoading(false);
+        }
+        setConfirmDialog(null);
+      },
+      onCancel: () => setConfirmDialog(null),
+    });
   };
 
   const handleTogglePublish = async (video) => {
@@ -676,6 +684,24 @@ const ChannelPage = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Toast Notification */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
+
+      {/* Confirm Dialog */}
+      {confirmDialog && (
+        <ConfirmDialog
+          message={confirmDialog.message}
+          onConfirm={confirmDialog.onCancel}
+          onCancel={confirmDialog.onCancel}
+        />
       )}
     </Layout>
   );
