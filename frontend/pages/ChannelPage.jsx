@@ -27,6 +27,7 @@ const ChannelPage = () => {
   const [activeTab, setActiveTab] = useState("videos");
   const [toast, setToast] = useState(null);
   const [confirmDialog, setConfirmDialog] = useState(null);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   // Video management states
   const [editingVideo, setEditingVideo] = useState(null);
@@ -66,7 +67,14 @@ const ChannelPage = () => {
   const handleSubscribe = async () => {
     try {
       await toggleSubscribe(channelData._id);
-      setIsSubscribed(!isSubscribed);
+      const newSubscribedState = !isSubscribed;
+      setIsSubscribed(newSubscribedState);
+
+      // Show confetti animation when subscribing
+      if (newSubscribedState) {
+        setShowConfetti(true);
+        setTimeout(() => setShowConfetti(false), 3000);
+      }
     } catch (err) {
       console.error("Subscribe error:", err);
       setToast({
@@ -364,18 +372,45 @@ const ChannelPage = () => {
                     Edit Channel
                   </button>
                 ) : (
-                  <button
-                    onClick={handleSubscribe}
-                    className={`px-6 py-2 font-semibold transition-all duration-200 hover:scale-105 active:scale-95 ${
-                      isSubscribed
-                        ? isDark
-                          ? "bg-neutral-800 text-white border border-neutral-700"
-                          : "bg-neutral-100 text-neutral-900 border border-neutral-300"
-                        : "bg-orange-500 hover:bg-orange-600 text-white"
-                    }`}
-                  >
-                    {isSubscribed ? "Subscribed" : "Subscribe"}
-                  </button>
+                  <div className="relative">
+                    <button
+                      onClick={handleSubscribe}
+                      className={`px-6 py-2 font-semibold transition-all duration-200 hover:scale-105 active:scale-95 flex items-center gap-2 ${
+                        isSubscribed
+                          ? isDark
+                            ? "bg-neutral-800 text-white border border-neutral-700 hover:bg-neutral-700"
+                            : "bg-neutral-200 text-neutral-900 border border-neutral-300 hover:bg-neutral-300"
+                          : "bg-orange-500 hover:bg-orange-600 text-white"
+                      }`}
+                    >
+                      {isSubscribed && (
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      )}
+                      {isSubscribed ? "Subscribed" : "Subscribe"}
+                    </button>
+                    
+                    {/* Confetti Animation */}
+                    {showConfetti && (
+                      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                        {[...Array(20)].map((_, i) => (
+                          <div
+                            key={i}
+                            className="absolute w-2 h-2 animate-confetti"
+                            style={{
+                              left: '50%',
+                              top: '50%',
+                              backgroundColor: ['#f97316', '#fb923c', '#fdba74', '#fed7aa'][i % 4],
+                              animationDelay: `${i * 50}ms`,
+                              transform: `rotate(${i * 18}deg) translateY(-${20 + i * 5}px)`,
+                              opacity: 0,
+                            }}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 )}
               </div>
             </div>
