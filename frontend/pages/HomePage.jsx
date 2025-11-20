@@ -68,7 +68,7 @@ const HomePage = () => {
       <div className="flex">
         {/* Left Sidebar */}
         <aside
-          className={`w-64 min-h-screen border-r sticky top-16 hidden lg:block ${
+          className={`w-64 h-screen border-r sticky top-0 hidden lg:block overflow-y-auto ${
             isDark
               ? "bg-neutral-950 border-neutral-800"
               : "bg-white border-neutral-200"
