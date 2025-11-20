@@ -151,6 +151,17 @@ const getAllComment = asyncHandler(async (req, res) => {
     options
   );
 
+  // Add isLiked field for each comment
+  if (result.docs && Array.isArray(result.docs)) {
+    for (const comment of result.docs) {
+      const like = await Like.findOne({
+        comment: comment._id,
+        likedBy: req.user._id,
+      });
+      comment.isLiked = !!like;
+    }
+  }
+
   // Return res
   return res
     .status(200)

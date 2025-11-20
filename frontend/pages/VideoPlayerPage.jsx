@@ -18,6 +18,7 @@ import {
   addVideoToPlaylist,
 } from "../api/services/playlist.services";
 import Layout from "../components/layout/Layout";
+import { timeAgo } from "../utils/timeAgo";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import Toast from "../components/ui/Toast";
@@ -766,7 +767,9 @@ const VideoPlayerPage = () => {
                                 isDark ? "text-neutral-500" : "text-neutral-500"
                               }`}
                             >
-                              {formatDate(commentItem.createdAt)}
+                              {commentItem.createdAt
+                                ? timeAgo(commentItem.createdAt)
+                                : ""}
                             </span>
                           </div>
 
