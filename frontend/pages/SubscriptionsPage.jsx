@@ -40,16 +40,26 @@ const SubscriptionsPage = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
-            <p
-              className={`text-lg font-medium ${
-                isDark ? "text-neutral-400" : "text-neutral-600"
-              }`}
-            >
-              Loading subscriptions...
-            </p>
+        <div className="max-w-7xl mx-auto px-6 py-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 auto-rows-fr py-8">
+            {[...Array(6)].map((_, i) => (
+              <div
+                key={i}
+                className={`border animate-pulse rounded-lg transition-all duration-200 ${
+                  isDark
+                    ? "bg-neutral-900 border-neutral-800"
+                    : "bg-white border-neutral-200"
+                }`}
+              >
+                <div className="flex items-center gap-4 p-4">
+                  <div className="w-16 h-16 rounded-full bg-neutral-800 dark:bg-neutral-700 animate-pulse" />
+                  <div className="flex-1 space-y-3">
+                    <div className="h-4 w-2/3 bg-neutral-800 dark:bg-neutral-700 rounded animate-pulse" />
+                    <div className="h-3 w-1/2 bg-neutral-800 dark:bg-neutral-700 rounded animate-pulse" />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </Layout>
