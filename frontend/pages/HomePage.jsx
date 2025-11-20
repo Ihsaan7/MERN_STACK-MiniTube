@@ -116,7 +116,7 @@ const HomePage = () => {
                 {[...Array(8)].map((_, idx) => (
                   <div
                     key={idx}
-                    className={`border overflow-hidden animate-pulse transition-all duration-200 rounded-lg ${
+                    className={`border overflow-hidden animate-pulse transition-all duration-200 ${
                       isDark
                         ? "bg-neutral-900 border-neutral-800"
                         : "bg-white border-neutral-200"
@@ -186,10 +186,10 @@ const HomePage = () => {
                 {videos.map((video) => (
                   <div
                     key={video._id}
-                    className={`border overflow-hidden transition-all duration-300 cursor-pointer group rounded-lg ${
+                    className={`border overflow-hidden transition-all duration-200 cursor-pointer group ${
                       isDark
-                        ? "bg-neutral-900 border-neutral-800 hover:border-orange-500"
-                        : "bg-white border-neutral-200 hover:border-orange-500 shadow-md hover:shadow-xl"
+                        ? "bg-neutral-900 border-neutral-800 hover:border-neutral-700"
+                        : "bg-white border-neutral-200 hover:border-neutral-300 shadow-md hover:shadow-xl"
                     }`}
                     onClick={() => navigate(`/video/${video._id}`)}
                   >
