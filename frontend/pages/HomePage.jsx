@@ -77,6 +77,7 @@ const HomePage = () => {
           <nav className="p-4 space-y-1">
             {/* Home */}
             <button
+              onClick={() => navigate("/home")}
               className={`w-full flex items-center gap-4 px-4 py-3 font-medium transition-colors ${
                 isDark
                   ? "bg-neutral-900 text-white"
@@ -91,6 +92,7 @@ const HomePage = () => {
 
             {/* Subscriptions */}
             <button
+              onClick={() => navigate("/subscriptions")}
               className={`w-full flex items-center gap-4 px-4 py-3 font-medium transition-colors ${
                 isDark
                   ? "text-neutral-400 hover:bg-neutral-900 hover:text-white"
@@ -121,6 +123,7 @@ const HomePage = () => {
 
             {/* Library */}
             <button
+              onClick={() => navigate("/library")}
               className={`w-full flex items-center gap-4 px-4 py-3 font-medium transition-colors ${
                 isDark
                   ? "text-neutral-400 hover:bg-neutral-900 hover:text-white"
@@ -145,6 +148,7 @@ const HomePage = () => {
 
             {/* History */}
             <button
+              onClick={() => navigate("/history")}
               className={`w-full flex items-center gap-4 px-4 py-3 font-medium transition-colors ${
                 isDark
                   ? "text-neutral-400 hover:bg-neutral-900 hover:text-white"
@@ -169,6 +173,7 @@ const HomePage = () => {
 
             {/* Liked Videos */}
             <button
+              onClick={() => navigate("/liked-videos")}
               className={`w-full flex items-center gap-4 px-4 py-3 font-medium transition-colors ${
                 isDark
                   ? "text-neutral-400 hover:bg-neutral-900 hover:text-white"

@@ -4,7 +4,7 @@ import apiClient from "../axios.config";
 export const toggleSubscribe = async (channelId) => {
   try {
     const response = await apiClient.post(
-      `/subscriptions/toggle-subscribe/${channelId}`
+      `/subs/toggle-subscribe/${channelId}`
     );
     return response;
   } catch (err) {
@@ -16,7 +16,7 @@ export const toggleSubscribe = async (channelId) => {
 export const getMySubscribers = async (channelId) => {
   try {
     const response = await apiClient.get(
-      `/subscriptions/get-my-subbed-channel/${channelId}`
+      `/subs/get-my-subbed-channel/${channelId}`
     );
     return response;
   } catch (err) {
@@ -27,9 +27,7 @@ export const getMySubscribers = async (channelId) => {
 // ==================== GET CHANNELS I SUBSCRIBED TO ====================
 export const getMySubscriptions = async () => {
   try {
-    const response = await apiClient.get(
-      "/subscriptions/get-me-subbed-channel"
-    );
+    const response = await apiClient.get("/subs/get-me-subbed-channel");
     return response;
   } catch (err) {
     throw err;
