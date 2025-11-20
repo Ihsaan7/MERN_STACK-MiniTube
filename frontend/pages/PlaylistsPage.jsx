@@ -88,7 +88,10 @@ const PlaylistsPage = () => {
       setToast({ message: "Playlist created successfully", type: "success" });
     } catch (err) {
       console.error("Error creating playlist:", err);
-      setToast({ message: err.response?.data?.message || "Failed to create playlist", type: "error" });
+      setToast({
+        message: err.response?.data?.message || "Failed to create playlist",
+        type: "error",
+      });
     } finally {
       setCreateLoading(false);
     }
@@ -121,7 +124,10 @@ const PlaylistsPage = () => {
       fetchPlaylists();
       setToast({ message: "Playlist updated successfully", type: "success" });
     } catch (err) {
-      setToast({ message: err.response?.data?.message || "Failed to update playlist", type: "error" });
+      setToast({
+        message: err.response?.data?.message || "Failed to update playlist",
+        type: "error",
+      });
     } finally {
       setEditLoading(false);
     }
@@ -136,9 +142,15 @@ const PlaylistsPage = () => {
           setDeleteLoading(playlistId);
           await deletePlaylist(playlistId);
           fetchPlaylists();
-          setToast({ message: "Playlist deleted successfully", type: "success" });
+          setToast({
+            message: "Playlist deleted successfully",
+            type: "success",
+          });
         } catch (err) {
-          setToast({ message: err.response?.data?.message || "Failed to delete playlist", type: "error" });
+          setToast({
+            message: err.response?.data?.message || "Failed to delete playlist",
+            type: "error",
+          });
         } finally {
           setDeleteLoading(null);
         }
@@ -289,16 +301,16 @@ const PlaylistsPage = () => {
               {playlists.map((playlist) => (
                 <div
                   key={playlist._id}
-                  className={`border transition-all duration-200 hover:scale-[1.02] ${
+                  className={`border overflow-hidden transition-all duration-300 cursor-pointer group rounded-lg ${
                     isDark
-                      ? "bg-neutral-900 border-neutral-800 hover:border-neutral-700"
-                      : "bg-white border-neutral-200 hover:border-neutral-300 shadow-md hover:shadow-lg"
+                      ? "bg-neutral-900 border-neutral-800 hover:border-orange-500"
+                      : "bg-white border-neutral-200 hover:border-orange-500 shadow-md hover:shadow-xl"
                   }`}
                 >
                   {/* Thumbnail */}
                   <div
                     onClick={() => navigate(`/playlist/${playlist._id}`)}
-                    className="relative aspect-video bg-gradient-to-br from-orange-500 to-orange-700 cursor-pointer group"
+                    className="relative aspect-video bg-gradient-to-br from-orange-500 to-orange-700 cursor-pointer group rounded-t-lg"
                   >
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="text-center text-white">
@@ -315,7 +327,7 @@ const PlaylistsPage = () => {
                       </div>
                     </div>
                     {!playlist.isPublic && (
-                      <div className="absolute top-2 right-2 px-2 py-1 bg-black/70 text-white text-xs font-semibold">
+                      <div className="absolute top-2 right-2 px-2 py-1 bg-black/70 text-white text-xs font-semibold rounded">
                         PRIVATE
                       </div>
                     )}
