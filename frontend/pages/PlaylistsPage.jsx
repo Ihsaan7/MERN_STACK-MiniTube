@@ -168,9 +168,11 @@ const PlaylistsPage = () => {
         <div className="hidden lg:block">
           <Sidebar />
         </div>
-        <div className={`flex-1 min-h-screen transition-colors duration-300 ${
-          isDark ? "bg-neutral-950" : "bg-neutral-50"
-        }`}>
+        <div
+          className={`flex-1 min-h-screen transition-colors duration-300 ${
+            isDark ? "bg-neutral-950" : "bg-neutral-50"
+          }`}
+        >
           <div className="container mx-auto px-6 py-8">
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
