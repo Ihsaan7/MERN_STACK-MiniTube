@@ -69,7 +69,10 @@ const ChannelPage = () => {
       setIsSubscribed(!isSubscribed);
     } catch (err) {
       console.error("Subscribe error:", err);
-      setToast({ message: "Failed to subscribe. Please try again.", type: "error" });
+      setToast({
+        message: "Failed to subscribe. Please try again.",
+        type: "error",
+      });
     }
   };
 
@@ -125,7 +128,6 @@ const ChannelPage = () => {
     setConfirmDialog({
       message: "Are you sure you want to delete this video?",
       onConfirm: async () => {
-
         try {
           setActionLoading(true);
           await deleteVideo(videoId);
@@ -199,10 +201,60 @@ const ChannelPage = () => {
   };
 
   if (loading) {
+    // Responsive skeleton loader for channel page
     return (
       <Layout>
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="animate-spin h-12 w-12 border-4 border-orange-500 border-t-transparent"></div>
+        <div
+          className={`min-h-screen ${
+            isDark ? "bg-neutral-950" : "bg-neutral-50"
+          }`}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            {/* Banner skeleton */}
+            <div className="relative h-48 md:h-64 mb-8 animate-pulse">
+              <div className="w-full h-full rounded bg-neutral-300/40 dark:bg-neutral-700/60" />
+            </div>
+            {/* Channel info skeleton */}
+            <div className="flex flex-col md:flex-row items-start md:items-end gap-6 mb-8 animate-pulse">
+              <div className="w-32 h-32 rounded-full bg-neutral-300/40 dark:bg-neutral-700/60" />
+              <div className="flex-1 flex flex-col gap-4">
+                <div className="h-8 w-1/3 rounded bg-neutral-300/40 dark:bg-neutral-700/60 mb-2" />
+                <div className="h-5 w-1/4 rounded bg-neutral-300/40 dark:bg-neutral-700/60 mb-2" />
+                <div className="h-5 w-1/2 rounded bg-neutral-300/40 dark:bg-neutral-700/60" />
+              </div>
+              <div className="h-10 w-32 rounded bg-neutral-300/40 dark:bg-neutral-700/60" />
+            </div>
+            {/* Videos grid skeleton */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 auto-rows-fr animate-pulse">
+              {[...Array(8)].map((_, idx) => (
+                <div
+                  key={idx}
+                  className={`border overflow-hidden transition-all duration-200 ${
+                    isDark
+                      ? "bg-neutral-900 border-neutral-800"
+                      : "bg-white border-neutral-200 shadow-md"
+                  }`}
+                >
+                  <div className="relative overflow-hidden">
+                    <div className="w-full h-48 bg-neutral-700/30 dark:bg-neutral-800/60" />
+                    <div className="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded w-12 h-5" />
+                  </div>
+                  <div className="p-4">
+                    <div className="h-5 w-3/4 mb-3 rounded bg-neutral-300/40 dark:bg-neutral-700/60" />
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 rounded-full bg-neutral-300/40 dark:bg-neutral-700/60" />
+                      <div className="h-4 w-1/3 rounded bg-neutral-300/40 dark:bg-neutral-700/60" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="h-3 w-12 rounded bg-neutral-300/40 dark:bg-neutral-700/60" />
+                      <div className="h-3 w-3 rounded bg-neutral-300/40 dark:bg-neutral-700/60" />
+                      <div className="h-3 w-16 rounded bg-neutral-300/40 dark:bg-neutral-700/60" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </Layout>
     );
