@@ -116,7 +116,9 @@ const SearchResultsPage = () => {
                   </div>
                   {/* Info skeleton */}
                   <div className="p-4">
-                    <div className={`h-5 w-3/4 mb-3 rounded bg-neutral-300/40 dark:bg-neutral-700/60`} />
+                    <div
+                      className={`h-5 w-3/4 mb-3 rounded bg-neutral-300/40 dark:bg-neutral-700/60`}
+                    />
                     <div className="flex items-center gap-2 mb-2">
                       <div className="w-8 h-8 rounded-full bg-neutral-300/40 dark:bg-neutral-700/60" />
                       <div className="h-4 w-1/3 rounded bg-neutral-300/40 dark:bg-neutral-700/60" />
@@ -220,7 +222,7 @@ const SearchResultsPage = () => {
                       ? "bg-neutral-900 border-neutral-800 hover:border-neutral-700"
                       : "bg-white border-neutral-200 hover:border-neutral-300 shadow-md hover:shadow-xl"
                   }`}
-                  style={{ willChange: 'transform, box-shadow' }}
+                  style={{ willChange: "transform, box-shadow" }}
                   onClick={() => navigate(`/video/${video._id}`)}
                 >
                   {/* Thumbnail */}
