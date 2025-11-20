@@ -214,9 +214,7 @@ const PlaylistDetailPage = () => {
                     {playlist.videoCount || 0} videos
                   </span>
                   <span>•</span>
-                  <span>
-                    Created {formatDate(playlist.createdAt)}
-                  </span>
+                  <span>Created {formatDate(playlist.createdAt)}</span>
                   {playlist.owner && (
                     <>
                       <span>•</span>
