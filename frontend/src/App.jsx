@@ -8,6 +8,7 @@ import VideoPlayerPage from "../pages/VideoPlayerPage";
 import ChannelPage from "../pages/ChannelPage";
 import SearchResultsPage from "../pages/SearchResultsPage";
 import SubscriptionsPage from "../pages/SubscriptionsPage";
+import WatchHistoryPage from "../pages/WatchHistoryPage";
 import ProtectedRoute from "../components/ProtectedRoutes";
 
 function App() {
@@ -85,6 +86,16 @@ function App() {
         element={
           <ProtectedRoute>
             <SubscriptionsPage />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Route - Watch History */}
+      <Route
+        path="/history"
+        element={
+          <ProtectedRoute>
+            <WatchHistoryPage />
           </ProtectedRoute>
         }
       />

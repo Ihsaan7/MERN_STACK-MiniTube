@@ -106,3 +106,13 @@ export const getUserFromStorage = async () => {
   const user = localStorage.getItem("user");
   return user ? JSON.parse(user) : null;
 };
+
+// ==================== GET WATCH HISTORY ====================
+export const getWatchHistory = async () => {
+  try {
+    const response = await apiClient.get("/users/watch-history");
+    return response;
+  } catch (err) {
+    throw err;
+  }
+};
