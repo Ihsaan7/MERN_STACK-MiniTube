@@ -185,7 +185,7 @@ const PlaylistsPage = () => {
                   My Playlists
                 </h1>
                 <p
-                  className={`${
+                  className={`font-semibold ${
                     isDark ? "text-neutral-400" : "text-neutral-600"
                   }`}
                 >

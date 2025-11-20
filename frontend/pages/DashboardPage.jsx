@@ -175,17 +175,42 @@ const DashboardPage = () => {
         }`}
       >
         <div className="container mx-auto px-6 py-8">
+          {/* Back Button */}
+          <button
+            onClick={() => navigate("/home")}
+            className={`flex items-center gap-2 mb-6 px-4 py-2 border font-semibold transition-all duration-200 hover:scale-105 active:scale-95 ${
+              isDark
+                ? "border-neutral-700 text-neutral-300 hover:bg-neutral-800"
+                : "border-neutral-300 text-neutral-700 hover:bg-neutral-50"
+            }`}
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              />
+            </svg>
+            Back to Home
+          </button>
+
           {/* Header */}
           <div className="mb-8">
             <h1
-              className={`text-4xl font-bold mb-2 ${
+              className={`text-4xl font-bold tracking-tight mb-2 ${
                 isDark ? "text-white" : "text-neutral-900"
               }`}
             >
               Channel Analytics
             </h1>
             <p
-              className={`${isDark ? "text-neutral-400" : "text-neutral-600"}`}
+              className={`font-semibold ${isDark ? "text-neutral-400" : "text-neutral-600"}`}
             >
               Track your channel's performance
             </p>
@@ -193,13 +218,17 @@ const DashboardPage = () => {
 
           {/* Info Banner */}
           <div
-            className={`mb-6 p-4 border-l-4 border-blue-500 ${
-              isDark ? "bg-blue-950/30" : "bg-blue-50"
+            className={`mb-6 p-4 border ${
+              isDark
+                ? "bg-neutral-900 border-neutral-800"
+                : "bg-white border-neutral-200"
             }`}
           >
             <div className="flex items-start gap-3">
               <svg
-                className="w-5 h-5 text-blue-500 shrink-0 mt-0.5"
+                className={`w-5 h-5 shrink-0 mt-0.5 ${
+                  isDark ? "text-orange-500" : "text-orange-600"
+                }`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -213,15 +242,15 @@ const DashboardPage = () => {
               </svg>
               <div>
                 <p
-                  className={`text-sm font-semibold mb-1 ${
-                    isDark ? "text-blue-400" : "text-blue-700"
+                  className={`text-sm font-bold mb-1 ${
+                    isDark ? "text-white" : "text-neutral-900"
                   }`}
                 >
                   Published Videos Only
                 </p>
                 <p
-                  className={`text-sm ${
-                    isDark ? "text-blue-300/80" : "text-blue-600"
+                  className={`text-sm font-semibold ${
+                    isDark ? "text-neutral-400" : "text-neutral-600"
                   }`}
                 >
                   These statistics only include your published videos. Private
@@ -235,20 +264,16 @@ const DashboardPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             {/* Total Views */}
             <div
-              className={`border p-6 transition-all duration-200 hover:scale-[1.02] ${
+              className={`border p-6 ${
                 isDark
                   ? "bg-neutral-900 border-neutral-800"
                   : "bg-white border-neutral-200 shadow-md"
               }`}
             >
               <div className="flex items-center justify-between mb-4">
-                <div
-                  className={`p-3 rounded-lg ${
-                    isDark ? "bg-blue-500/20" : "bg-blue-100"
-                  }`}
-                >
+                <div className="p-3 bg-orange-500/10 border border-orange-500/20">
                   <svg
-                    className="w-6 h-6 text-blue-500"
+                    className="w-6 h-6 text-orange-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -269,14 +294,14 @@ const DashboardPage = () => {
                 </div>
               </div>
               <h3
-                className={`text-3xl font-bold mb-1 ${
+                className={`text-3xl font-bold tracking-tight mb-1 ${
                   isDark ? "text-white" : "text-neutral-900"
                 }`}
               >
                 {formatNumber(stats?.totalViews || 0)}
               </h3>
               <p
-                className={`text-sm font-medium ${
+                className={`text-sm font-semibold ${
                   isDark ? "text-neutral-400" : "text-neutral-600"
                 }`}
               >
@@ -286,20 +311,16 @@ const DashboardPage = () => {
 
             {/* Total Subscribers */}
             <div
-              className={`border p-6 transition-all duration-200 hover:scale-[1.02] ${
+              className={`border p-6 ${
                 isDark
                   ? "bg-neutral-900 border-neutral-800"
                   : "bg-white border-neutral-200 shadow-md"
               }`}
             >
               <div className="flex items-center justify-between mb-4">
-                <div
-                  className={`p-3 rounded-lg ${
-                    isDark ? "bg-green-500/20" : "bg-green-100"
-                  }`}
-                >
+                <div className="p-3 bg-orange-500/10 border border-orange-500/20">
                   <svg
-                    className="w-6 h-6 text-green-500"
+                    className="w-6 h-6 text-orange-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -314,14 +335,14 @@ const DashboardPage = () => {
                 </div>
               </div>
               <h3
-                className={`text-3xl font-bold mb-1 ${
+                className={`text-3xl font-bold tracking-tight mb-1 ${
                   isDark ? "text-white" : "text-neutral-900"
                 }`}
               >
                 {formatNumber(stats?.totalSubscribers || 0)}
               </h3>
               <p
-                className={`text-sm font-medium ${
+                className={`text-sm font-semibold ${
                   isDark ? "text-neutral-400" : "text-neutral-600"
                 }`}
               >
@@ -331,18 +352,14 @@ const DashboardPage = () => {
 
             {/* Total Likes */}
             <div
-              className={`border p-6 transition-all duration-200 hover:scale-[1.02] ${
+              className={`border p-6 ${
                 isDark
                   ? "bg-neutral-900 border-neutral-800"
                   : "bg-white border-neutral-200 shadow-md"
               }`}
             >
               <div className="flex items-center justify-between mb-4">
-                <div
-                  className={`p-3 rounded-lg ${
-                    isDark ? "bg-orange-500/20" : "bg-orange-100"
-                  }`}
-                >
+                <div className="p-3 bg-orange-500/10 border border-orange-500/20">
                   <svg
                     className="w-6 h-6 text-orange-500"
                     fill="none"
@@ -359,14 +376,14 @@ const DashboardPage = () => {
                 </div>
               </div>
               <h3
-                className={`text-3xl font-bold mb-1 ${
+                className={`text-3xl font-bold tracking-tight mb-1 ${
                   isDark ? "text-white" : "text-neutral-900"
                 }`}
               >
                 {formatNumber(stats?.totalLikes || 0)}
               </h3>
               <p
-                className={`text-sm font-medium ${
+                className={`text-sm font-semibold ${
                   isDark ? "text-neutral-400" : "text-neutral-600"
                 }`}
               >
@@ -376,20 +393,16 @@ const DashboardPage = () => {
 
             {/* Total Videos */}
             <div
-              className={`border p-6 transition-all duration-200 hover:scale-[1.02] ${
+              className={`border p-6 ${
                 isDark
                   ? "bg-neutral-900 border-neutral-800"
                   : "bg-white border-neutral-200 shadow-md"
               }`}
             >
               <div className="flex items-center justify-between mb-4">
-                <div
-                  className={`p-3 rounded-lg ${
-                    isDark ? "bg-purple-500/20" : "bg-purple-100"
-                  }`}
-                >
+                <div className="p-3 bg-orange-500/10 border border-orange-500/20">
                   <svg
-                    className="w-6 h-6 text-purple-500"
+                    className="w-6 h-6 text-orange-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -404,14 +417,14 @@ const DashboardPage = () => {
                 </div>
               </div>
               <h3
-                className={`text-3xl font-bold mb-1 ${
+                className={`text-3xl font-bold tracking-tight mb-1 ${
                   isDark ? "text-white" : "text-neutral-900"
                 }`}
               >
                 {stats?.totalVideos || 0}
               </h3>
               <p
-                className={`text-sm font-medium ${
+                className={`text-sm font-semibold ${
                   isDark ? "text-neutral-400" : "text-neutral-600"
                 }`}
               >
