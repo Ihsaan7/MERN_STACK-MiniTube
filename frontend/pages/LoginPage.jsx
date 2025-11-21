@@ -182,7 +182,7 @@ const LoginPage = () => {
 
           <div className={`border p-5 sm:p-6 lg:p-8 transition-all duration-300 ${
             isDark 
-              ? 'bg-neutral-900 border-neutral-800' 
+              ? 'bg-neutral-900 border-neutral-800 shadow-lg' 
               : 'bg-white border-neutral-200 shadow-lg'
           }`}>
             <div className="mb-6 sm:mb-8">
@@ -216,8 +216,8 @@ const LoginPage = () => {
                   placeholder="Enter your email or username"
                   className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
                     isDark 
-                      ? 'bg-neutral-950 border-neutral-800 text-white placeholder-neutral-600 focus:border-white focus:ring-white focus:ring-offset-neutral-900' 
-                      : 'bg-white border-neutral-300 text-neutral-900 placeholder-neutral-400 focus:border-neutral-900 focus:ring-neutral-900 focus:ring-offset-white'
+                      ? 'bg-neutral-950 border-neutral-800 text-white placeholder-neutral-600 focus:border-orange-500 focus:ring-orange-500 focus:ring-offset-neutral-900' 
+                      : 'bg-white border-neutral-300 text-neutral-900 placeholder-neutral-400 focus:border-orange-500 focus:ring-orange-500 focus:ring-offset-white'
                   }`}
                   disabled={loading}
                 />
@@ -238,8 +238,8 @@ const LoginPage = () => {
                   placeholder="Enter your password"
                   className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
                     isDark 
-                      ? 'bg-neutral-950 border-neutral-800 text-white placeholder-neutral-600 focus:border-white focus:ring-white focus:ring-offset-neutral-900' 
-                      : 'bg-white border-neutral-300 text-neutral-900 placeholder-neutral-400 focus:border-neutral-900 focus:ring-neutral-900 focus:ring-offset-white'
+                      ? 'bg-neutral-950 border-neutral-800 text-white placeholder-neutral-600 focus:border-orange-500 focus:ring-orange-500 focus:ring-offset-neutral-900' 
+                      : 'bg-white border-neutral-300 text-neutral-900 placeholder-neutral-400 focus:border-orange-500 focus:ring-orange-500 focus:ring-offset-white'
                   }`}
                   disabled={loading}
                 />
@@ -252,9 +252,7 @@ const LoginPage = () => {
                 className={`w-full py-3 sm:py-3.5 px-4 text-sm sm:text-base font-semibold transition-all duration-200 ${
                   loading
                     ? isDark ? 'bg-neutral-800 text-neutral-500 cursor-not-allowed' : 'bg-neutral-200 text-neutral-400 cursor-not-allowed'
-                    : isDark 
-                      ? 'bg-white text-neutral-900 hover:bg-neutral-100 active:scale-[0.98]' 
-                      : 'bg-neutral-900 text-white hover:bg-neutral-800 active:scale-[0.98]'
+                    : 'bg-orange-500 text-white hover:bg-orange-600 active:scale-[0.98]'
                 }`}
               >
                 {loading ? (
@@ -275,9 +273,7 @@ const LoginPage = () => {
             <div className="mt-5 sm:mt-6 text-center">
               <p className={`text-sm sm:text-base ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
                 Don't have an account?{" "}
-                <a href="/register" className={`font-semibold transition-colors ${
-                  isDark ? 'text-white hover:text-neutral-300' : 'text-neutral-900 hover:text-neutral-700'
-                }`}>
+                <a href="/register" className="font-semibold text-orange-500 hover:text-orange-600 transition-colors">
                   Create account
                 </a>
               </p>
