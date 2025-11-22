@@ -137,8 +137,8 @@ Practice2/
 
 ## 👨‍💻 Author & Contributors
 
-- **Ihsaan7** (Backend, Frontend, DevOps)
-- [Your Name Here]
+- **Ihsaan7** (Backend, Frontend)
+- [IHSAAN ULLAH]
 
 ---
 
