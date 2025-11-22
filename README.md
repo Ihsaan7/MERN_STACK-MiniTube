@@ -1,9 +1,9 @@
-<<<<<<< HEAD
-# 🚀 MiniTube - MERN Video Platform
+
+# 🚀 DevTube - MERN Video Platform
 
 ![MERN Stack](https://img.shields.io/badge/MERN-Stack-green) ![Vercel](https://img.shields.io/badge/Deploy-Vercel-blue) ![MongoDB](https://img.shields.io/badge/Database-MongoDB-brightgreen) ![Express](https://img.shields.io/badge/Backend-Express.js-lightgrey) ![React](https://img.shields.io/badge/Frontend-React.js-blue) ![Node](https://img.shields.io/badge/Server-Node.js-green)
 
-> **MiniTube** is a full-featured video sharing platform built with the MERN stack. It supports user channels, playlists, subscriptions, comments, likes, video uploads, and more—all with industry-standard backend practices and a modern, responsive frontend.
+> **DevTube** is a full-featured video sharing platform built with the MERN stack. It supports user channels, playlists, subscriptions, comments, likes, video uploads, and more—all with industry-standard backend practices and a modern, responsive frontend.
 
 ---
 
@@ -118,7 +118,7 @@ Practice2/
 
 1. Clone the repo:
    ```bash
-   git clone https://github.com/Ihsaan7/MERN_STACK-MiniTube.git
+   git clone https://github.com/Ihsaan7/MERN_STACK-DevTube.git
    ```
 2. Install dependencies:
    ```bash
